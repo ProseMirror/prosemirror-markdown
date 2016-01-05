@@ -1,6 +1,0 @@
-/node_modules
-.tern-port
-/dist/*
-/notes.txt
-/demo/*-built.js
-webpack.config.js
