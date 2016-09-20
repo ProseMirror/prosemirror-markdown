@@ -1,5 +1,5 @@
 const markdownit = require("markdown-it")
-const {schema} = require("../schema-basic")
+const {schema} = require("./schema")
 const {Mark} = require("prosemirror-model")
 
 function maybeMerge(a, b) {
