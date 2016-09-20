@@ -6,10 +6,11 @@ ProseMirror is a well-behaved rich semantic content editor based on
 contentEditable, with support for collaborative editing and custom
 document schemas.
 
-This [module](http://prosemirror.net/ref.html#model) implements
-ProseMirror's [document model](http://prosemirror.net/guide/doc.html),
-along with the mechanisms needed to support
-[schemas](http://prosemirror.net/guide/schema.html).
+This implements a ProseMirror
+[schema](http://prosemirror.net/guide/schema.html) that corresponds to
+the document schema used by [CommonMark](http://commonmark.org/), and
+a parser and serializer to convert between ProseMirror documents in
+that schema and CommonMark/Markdown text.
 
 The [project page](http://prosemirror.net) has more information, a
 number of [demos](http://prosemirror.net/#demos) and the
@@ -25,3 +26,7 @@ There's a [forum](http://discuss.prosemirror.net) for general
 discussion and support requests, and the
 [Github bug tracker](https://github.com/prosemirror/prosemirror/issues)
 is the place to report issues.
+
+## Usage
+
+FIXME to be written
