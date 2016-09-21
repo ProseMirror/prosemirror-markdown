@@ -1,6 +1,6 @@
 # prosemirror-model
 
-[![Join the chat at https://gitter.im/ProseMirror/prosemirror](https://badges.gitter.im/ProseMirror/prosemirror.svg)](https://gitter.im/ProseMirror/prosemirror?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[ [**WEBSITE**](http://prosemirror.net) | [**ISSUES**](https://github.com/prosemirror/prosemirror/issues) | [**FORUM**](https://discuss.prosemirror.net) | [**GITTER**](https://gitter.im/ProseMirror/prosemirror) ]
 
 ProseMirror is a well-behaved rich semantic content editor based on
 contentEditable, with support for collaborative editing and custom
@@ -26,7 +26,3 @@ There's a [forum](http://discuss.prosemirror.net) for general
 discussion and support requests, and the
 [Github bug tracker](https://github.com/prosemirror/prosemirror/issues)
 is the place to report issues.
-
-## Usage
-
-FIXME to be written
