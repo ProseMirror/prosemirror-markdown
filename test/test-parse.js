@@ -5,9 +5,17 @@ const {defaultMarkdownParser, defaultMarkdownSerializer} = require("../dist")
 
 const {doc, blockquote, h1, h2, p, hr, li, ol, ul, pre, em, strong, code, a, br, img, dataImage} = require("./build")
 
-function same(text, doc) {
+function parse(text, doc) {
   ist(defaultMarkdownParser.parse(text), doc, eq)
+}
+
+function serialize(doc, text) {
   ist(defaultMarkdownSerializer.serialize(doc), text)
+}
+
+function same(text, doc) {
+  parse(text, doc)
+  serialize(doc, text)
 }
 
 describe("markdown", () => {
@@ -77,4 +85,7 @@ describe("markdown", () => {
   it("doesn't accidentally generate list markup", () =>
      same("1\\. foo",
           doc(p("1. foo"))))
+
+  it("drops trailing hard breaks", () =>
+     serialize(doc(p("a", br, br)), "a"))
 })

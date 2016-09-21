@@ -1,7 +1,7 @@
 // ;; A specification for serializing a ProseMirror document as
 // Markdown/CommonMark text.
 class MarkdownSerializer {
-  // :: (Object<(MarkdownSerializerState, Node)>, Object)
+  // :: (Object<(state: MarkdownSerializerState, node: Node, parent: Node, index: number)>, Object)
 
   // Construct a serializer with the given configuration. The `nodes`
   // object should map node names in a given schema to function that
@@ -87,8 +87,12 @@ const defaultMarkdownSerializer = new MarkdownSerializer({
     state.write("![" + state.esc(node.attrs.alt || "") + "](" + state.esc(node.attrs.src) +
                 (node.attrs.title ? " " + state.quote(node.attrs.title) : "") + ")")
   },
-  hard_break(state) {
-    state.write("\\\n")
+  hard_break(state, node, parent, index) {
+    for (let i = index + 1; i < parent.childCount; i++)
+      if (parent.child(i).type != node.type) {
+        state.write("\\\n")
+        return
+      }
   },
   text(state, node) {
     state.text(node.text)
@@ -192,21 +196,22 @@ class MarkdownSerializerState {
 
   // :: (Node)
   // Render the given node as a block.
-  render(node) {
-    this.nodes[node.type.name](this, node)
+  render(node, parent, index) {
+    if (typeof parent == "number") throw new Error("!")
+    this.nodes[node.type.name](this, node, parent, index)
   }
 
   // :: (Node)
   // Render the contents of `parent` as block nodes.
   renderContent(parent) {
-    parent.forEach(child => this.render(child))
+    parent.forEach((node, _, i) => this.render(node, parent, i))
   }
 
   // :: (Node)
   // Render the contents of `parent` as inline content.
   renderInline(parent) {
     let active = []
-    let progress = node => {
+    let progress = (node, _, index) => {
       let marks = node ? node.marks : []
       let code = marks.length && marks[marks.length - 1].type.isCode && marks[marks.length - 1]
       let len = marks.length - (code ? 1 : 0)
@@ -252,13 +257,18 @@ class MarkdownSerializerState {
         if (code && node.isText)
           this.text(this.markString(code, false) + node.text + this.markString(code, true), false)
         else
-          this.render(node)
+          this.render(node, parent, index)
       }
     }
     parent.forEach(progress)
     progress(null)
   }
 
+  // :: (Node, string, (number) → string)
+  // Render a node's content as a list. `delim` should be the extra
+  // indentation added to all lines except the first in an item,
+  // `firstDelim` is a function going from an item index to a
+  // delimiter for the first line of the item.
   renderList(node, delim, firstDelim) {
     if (this.closed && this.closed.type == node.type)
       this.flushClose(3)
@@ -267,10 +277,10 @@ class MarkdownSerializerState {
 
     let prevTight = this.inTightList
     this.inTightList = node.attrs.tight
-    for (let i = 0; i < node.childCount; i++) {
+    node.forEach((child, _, i) => {
       if (i && node.attrs.tight) this.flushClose(1)
-      this.wrapBlock(delim, firstDelim(i), node, () => this.render(node.child(i)))
-    }
+      this.wrapBlock(delim, firstDelim(i), node, () => this.render(child, node, i))
+    })
     this.inTightList = prevTight
   }
 
