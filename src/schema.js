@@ -20,31 +20,6 @@ exports.schema = new Schema({
       toDOM() { return ["blockquote", 0] }
     },
 
-    ordered_list: {
-      content: "list_item+",
-      group: "block",
-      attrs: {order: {default: 1}},
-      parseDOM: [{tag: "ol", getAttrs(dom) {
-        return {order: dom.hasAttribute("start") ? +dom.getAttribute("start") : 1}
-      }}],
-      toDOM(node) {
-        return ["ol", {start: node.attrs.order == 1 ? null : node.attrs.order}, 0]
-      }
-    },
-
-    bullet_list: {
-      content: "list_item+",
-      group: "block",
-      parseDOM: [{tag: "ul"}],
-      toDOM() { return ["ul", 0] }
-    },
-
-    list_item: {
-      content: "block+",
-      parseDOM: [{tag: "li"}],
-      toDOM() { return ["li", 0] }
-    },
-
     horizontal_rule: {
       group: "block",
       parseDOM: [{tag: "hr"}],
