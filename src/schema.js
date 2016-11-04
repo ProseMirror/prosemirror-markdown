@@ -30,6 +30,7 @@ exports.schema = new Schema({
       attrs: {level: {default: 1}},
       content: "inline<_>*",
       group: "block",
+      defining: true,
       parseDOM: [{tag: "h1", attrs: {level: 1}},
                  {tag: "h2", attrs: {level: 2}},
                  {tag: "h3", attrs: {level: 3}},
@@ -43,6 +44,7 @@ exports.schema = new Schema({
       content: "text*",
       group: "block",
       code: true,
+      defining: true,
       attrs: {params: {default: ""}},
       parseDOM: [{tag: "pre", preserveWhitespace: true, getAttrs: node => ({params: node.getAttribute("data-params")})}],
       toDOM(node) { return ["pre", node.attrs.params ? {"data-params": node.attrs.params} : {}, ["code", 0]] }
@@ -72,6 +74,7 @@ exports.schema = new Schema({
 
     list_item: {
       content: "paragraph block*",
+      defining: true,
       parseDOM: [{tag: "li"}],
       toDOM() { return ["li", 0] }
     },
