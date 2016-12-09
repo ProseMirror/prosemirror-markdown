@@ -29,7 +29,6 @@
   "scripts": {
     "test": "mocha test/test-*.js",
     "build": "rimraf dist && buble -i src -o dist",
-    "link-src": "rimraf dist && ln -s src dist",
     "prepublish": "npm run build"
   }
 }
