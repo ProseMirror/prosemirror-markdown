@@ -1,6 +1,6 @@
 {
   "name": "prosemirror-markdown",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "ProseMirror Markdown integration",
   "main": "dist/index.js",
   "license": "MIT",
@@ -16,7 +16,7 @@
     "url": "git://github.com/prosemirror/prosemirror-markdown.git"
   },
   "dependencies": {
-    "prosemirror-model": "~0.16.0",
+    "prosemirror-model": "~0.17.0",
     "markdown-it": "^6.0.4"
   },
   "devDependencies": {
