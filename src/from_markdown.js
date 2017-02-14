@@ -11,7 +11,7 @@ function maybeMerge(a, b) {
 class MarkdownParseState {
   constructor(schema, tokenHandlers) {
     this.schema = schema
-    this.stack = [{type: schema.nodes.doc, content: []}]
+    this.stack = [{type: schema.topNodeType, content: []}]
     this.marks = Mark.none
     this.tokenHandlers = tokenHandlers
   }
