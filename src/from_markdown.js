@@ -208,7 +208,7 @@ const defaultMarkdownParser = new MarkdownParser(schema, markdownit("commonmark"
   ordered_list: {block: "ordered_list", attrs: tok => ({order: +tok.attrGet("order") || 1})},
   heading: {block: "heading", attrs: tok => ({level: +tok.tag.slice(1)})},
   code_block: {block: "code_block"},
-  fence: {block: "code_block"},
+  fence: {block: "code_block", attrs: tok => ({params: tok.info || ""})},
   hr: {node: "horizontal_rule"},
   image: {node: "image", attrs: tok => ({
     src: tok.attrGet("src"),

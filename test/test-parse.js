@@ -1,7 +1,7 @@
 const {eq} = require("prosemirror-model/test/build")
 const ist = require("ist")
 
-const {defaultMarkdownParser, defaultMarkdownSerializer} = require("../dist")
+const {schema, defaultMarkdownParser, defaultMarkdownSerializer} = require("../dist")
 
 const {doc, blockquote, h1, h2, p, hr, li, ol, ul, pre, em, strong, code, a, br, img, dataImage} = require("./build")
 
@@ -45,6 +45,10 @@ describe("markdown", () => {
   it("parses a code block", () =>
      same("Some code:\n\n    Here it is\n\nPara",
           doc(p("Some code:"), pre("Here it is"), p("Para"))))
+
+  it("parses a fenced code block", () =>
+     same("foo\n\n```javascript\n1\n```",
+          doc(p("foo"), schema.node("code_block", {params: "javascript"}, [schema.text("1")]))))
 
   it("parses inline marks", () =>
      same("Hello. Some *em* text, some **strong** text, and some `code`",
