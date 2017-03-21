@@ -24,7 +24,8 @@
     "punycode": "^1.4.0",
     "mocha": "^3.0.2",
     "ist": "1.0.0",
-    "rimraf": "^2.5.4"
+    "rimraf": "^2.5.4",
+    "prosemirror-test-builder": "^0.19.0"
   },
   "scripts": {
     "test": "mocha test/test-*.js",

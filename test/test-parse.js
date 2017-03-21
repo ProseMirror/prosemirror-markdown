@@ -1,9 +1,9 @@
-const {eq} = require("prosemirror-model/test/build")
+const {eq} = require("prosemirror-test-builder")
 const ist = require("ist")
 
 const {schema, defaultMarkdownParser, defaultMarkdownSerializer} = require("../dist")
 
-const {doc, blockquote, h1, h2, p, hr, li, ol, ul, pre, em, strong, code, a, br, img, dataImage} = require("./build")
+const {doc, blockquote, h1, h2, p, hr, li, ol, ul, pre, em, strong, code, a, br, img} = require("./build")
 
 function parse(text, doc) {
   ist(defaultMarkdownParser.parse(text), doc, eq)
@@ -59,7 +59,7 @@ describe("markdown", () => {
           doc(p("This is ", strong("strong ", em("emphasized text with ", code("code"), " in"), " it")))))
 
   it("parses links inside strong text", () =>
-     same("**[link](http://foo) is bold**",
+     same("**[link](foo) is bold**",
           doc(p(strong(a("link"), " is bold")))))
 
   it("parses code mark inside strong text", () =>
@@ -67,11 +67,11 @@ describe("markdown", () => {
           doc(p(strong(code("code"), " is bold")))))
 
   it("parses links", () =>
-     same("My [link](http://foo) goes to foo",
+     same("My [link](foo) goes to foo",
           doc(p("My ", a("link"), " goes to foo"))))
 
   it("parses an image", () =>
-     same("Here's an image: ![x](" + dataImage + ")",
+     same("Here's an image: ![x](img.png)",
           doc(p("Here's an image: ", img))))
 
   it("parses a line break", () =>
