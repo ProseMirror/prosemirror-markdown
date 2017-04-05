@@ -122,7 +122,13 @@ class MarkdownSerializerState {
     this.inTightList = false
     // :: Object
     // The options passed to the serializer.
+    //   tightLists:: ?bool
+    //   Whether to render lists in a tight style. This can be overridden
+    //   on a node level by specifying a tight attribute on the node.
+    //   Defaults to false.
     this.options = options || {}
+    if (typeof this.options.tightLists == "undefined")
+      this.options.tightLists = false
   }
 
   flushClose(size) {
@@ -275,10 +281,11 @@ class MarkdownSerializerState {
     else if (this.inTightList)
       this.flushClose(1)
 
+    let isTight = typeof node.attrs.tight != "undefined" ? node.attrs.tight : this.options.tightLists
     let prevTight = this.inTightList
-    this.inTightList = node.attrs.tight
+    this.inTightList = isTight
     node.forEach((child, _, i) => {
-      if (i && node.attrs.tight) this.flushClose(1)
+      if (i && isTight) this.flushClose(1)
       this.wrapBlock(delim, firstDelim(i), node, () => this.render(child, node, i))
     })
     this.inTightList = prevTight
