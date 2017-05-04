@@ -18,6 +18,12 @@ class MarkdownSerializer {
   // opening and closing syntax appears relative to other mixable
   // marks can be varied. (For example, you can say `**a *b***` and
   // `*a **b***`, but not `` `a *b*` ``.)
+  //
+  // The `expelEnclosingWhitespace` mark property causes the serializer
+  // to move enclosing whitespace from inside the marks to outside the marks.
+  // This is necessary for emphasis marks as CommonMark does not permit
+  // enclosing whitespace inside emphasis marks, see:
+  // http://spec.commonmark.org/0.26/#example-330
   constructor(nodes, marks) {
     // :: Object<(MarkdownSerializerState, Node)> The node serializer
     // functions for this serializer.
@@ -95,11 +101,11 @@ const defaultMarkdownSerializer = new MarkdownSerializer({
       }
   },
   text(state, node) {
-    state.text(node.text)
+    state.text(state.shouldExpelEnclosingWhitespace(node) ? node.text.trim() : node.text)
   }
 }, {
-  em: {open: "*", close: "*", mixable: true},
-  strong: {open: "**", close: "**", mixable: true},
+  em: {open: "*", close: "*", mixable: true, expelEnclosingWhitespace: true},
+  strong: {open: "**", close: "**", mixable: true, expelEnclosingWhitespace: true},
   link: {
     open: "[",
     close(state, mark) {
@@ -216,7 +222,7 @@ class MarkdownSerializerState {
   // :: (Node)
   // Render the contents of `parent` as inline content.
   renderInline(parent) {
-    let active = []
+    let active = [], whitespace = null
     let progress = (node, _, index) => {
       let marks = node ? node.marks : []
       let code = marks.length && marks[marks.length - 1].type.isCode && marks[marks.length - 1]
@@ -249,6 +255,19 @@ class MarkdownSerializerState {
       // Close the marks that need to be closed
       while (keep < active.length)
         this.text(this.markString(active.pop(), false), false)
+
+      // Output any previously expelled trailing whitespace outside the marks
+      if (whitespace && whitespace.trailing) {
+        this.text(whitespace.trailing)
+        whitespace = null
+      }
+
+      // Output leading and carry forward trailing whitespace if needed
+      if (node && node.isText && this.shouldExpelEnclosingWhitespace(node)) {
+        whitespace = this.getEnclosingWhitespace(node.text)
+        if (whitespace.leading)
+          this.text(whitespace.leading)
+      }
 
       // Open the marks that need to be opened
       while (active.length < len) {
@@ -321,5 +340,31 @@ class MarkdownSerializerState {
     let value = open ? info.open : info.close
     return typeof value == "string" ? value : value(this, mark)
   }
+
+  // :: (Node) → bool
+  // Determine if we need to move enclosing whitespace from inside the marks to
+  // the outside (e.g., `<em> foo </em>` becomes ` *foo* `).
+  shouldExpelEnclosingWhitespace(node) {
+    if (!node)
+      return false
+    for (let i = 0; i < node.marks.length; i++) {
+      let mark = node.marks[i]
+      if (this.marks[mark.type.name] && this.marks[mark.type.name].expelEnclosingWhitespace)
+        return true
+    }
+    return false
+  }
+
+  // :: (string) → object
+  // Get leading and trailing whitespace from a string. Values of
+  // leading or trailing property of the return object will be undefined
+  // if there is no match.
+  getEnclosingWhitespace(text) {
+    return {
+      leading: (text.match(/^(\s+)/) || [])[0],
+      trailing: (text.match(/(\s+)$/) || [])[0]
+    }
+  }
+
 }
 exports.MarkdownSerializerState = MarkdownSerializerState

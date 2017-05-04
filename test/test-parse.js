@@ -92,4 +92,9 @@ describe("markdown", () => {
 
   it("drops trailing hard breaks", () =>
      serialize(doc(p("a", br, br)), "a"))
+
+  it("expels enclosing whitespace from inside emphasis", () =>
+     serialize(doc(p("Some emphasized text with", strong(em("  whitespace   ")), "surrounding the emphasis.")),
+          "Some emphasized text with  ***whitespace***   surrounding the emphasis."))
+
 })
