@@ -197,10 +197,10 @@ class MarkdownParser {
 }
 exports.MarkdownParser = MarkdownParser
 
-// :: MarkdownParser
-// A parser parsing unextended [CommonMark](http://commonmark.org/),
-// without inline HTML, and producing a document in the basic schema.
-const defaultMarkdownParser = new MarkdownParser(schema, markdownit("commonmark", {html: false}), {
+// Tokens for the basic schema; import these and create your own parser instance
+// with a modified version if you need to support additional tokens.
+const defaultMarkdownParserTokens = {
+  // Nodes
   blockquote: {block: "blockquote"},
   paragraph: {block: "paragraph"},
   list_item: {block: "list_item"},
@@ -216,7 +216,7 @@ const defaultMarkdownParser = new MarkdownParser(schema, markdownit("commonmark"
     alt: tok.children[0] && tok.children[0].content || null
   })},
   hardbreak: {node: "hard_break"},
-
+  // Marks
   em: {mark: "em"},
   strong: {mark: "strong"},
   link: {mark: "link", attrs: tok => ({
@@ -224,5 +224,11 @@ const defaultMarkdownParser = new MarkdownParser(schema, markdownit("commonmark"
     title: tok.attrGet("title") || null
   })},
   code_inline: {mark: "code"}
-})
+}
+exports.defaultMarkdownParserTokens = defaultMarkdownParserTokens
+
+// :: MarkdownParser
+// A parser parsing unextended [CommonMark](http://commonmark.org/),
+// without inline HTML, and producing a document in the basic schema.
+const defaultMarkdownParser = new MarkdownParser(schema, markdownit("commonmark", {html: false}), defaultMarkdownParserTokens)
 exports.defaultMarkdownParser = defaultMarkdownParser
