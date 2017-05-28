@@ -81,8 +81,8 @@ class MarkdownParseState {
   }
 }
 
-function attrs(given, token) {
-  return given instanceof Function ? given(token) : given
+function callOrReturn(object, arg) {
+  return object instanceof Function ? object(arg) : object
 }
 
 // Code content is represented as a single token with a `content`
@@ -100,30 +100,30 @@ function tokenHandlers(schema, tokens) {
   for (let type in tokens) {
     let spec = tokens[type]
     if (spec.block) {
-      let nodeType = schema.nodeType(spec.block)
+      let nodeType = schema.nodeType(callOrReturn(spec.block, tok))
       if (noOpenClose(type)) {
         handlers[type] = (state, tok) => {
-          state.openNode(nodeType, attrs(spec.attrs, tok))
+          state.openNode(nodeType, callOrReturn(spec.attrs, tok))
           state.addText(withoutTrailingNewline(tok.content))
           state.closeNode()
         }
       } else {
-        handlers[type + "_open"] = (state, tok) => state.openNode(nodeType, attrs(spec.attrs, tok))
+        handlers[type + "_open"] = (state, tok) => state.openNode(nodeType, callOrReturn(spec.attrs, tok))
         handlers[type + "_close"] = state => state.closeNode()
       }
     } else if (spec.node) {
-      let nodeType = schema.nodeType(spec.node)
-      handlers[type] = (state, tok) => state.addNode(nodeType, attrs(spec.attrs, tok))
+      let nodeType = schema.nodeType(callOrReturn(spec.node, tok))
+      handlers[type] = (state, tok) => state.addNode(nodeType, callOrReturn(spec.attrs, tok))
     } else if (spec.mark) {
-      let markType = schema.marks[spec.mark]
+      let markType = schema.marks[callOrReturn(spec.mark, tok)]
       if (noOpenClose(type)) {
         handlers[type] = (state, tok) => {
-          state.openMark(markType.create(attrs(spec.attrs, tok)))
+          state.openMark(markType.create(callOrReturn(spec.attrs, tok)))
           state.addText(withoutTrailingNewline(tok.content))
           state.closeMark(markType)
         }
       } else {
-        handlers[type + "_open"] = (state, tok) => state.openMark(markType.create(attrs(spec.attrs, tok)))
+        handlers[type + "_open"] = (state, tok) => state.openMark(markType.create(callOrReturn(spec.attrs, tok)))
         handlers[type + "_close"] = state => state.closeMark(markType)
       }
     } else {
