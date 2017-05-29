@@ -138,7 +138,7 @@ function tokenHandlers(schema, tokens) {
   return handlers
 }
 
-// ;; A configuration of a Markdown parser. Such a parser uses
+// ::- A configuration of a Markdown parser. Such a parser uses
 // [markdown-it](https://github.com/markdown-it/markdown-it) to
 // tokenize a file, and then runs the custom rules it is given over
 // the tokens to create a ProseMirror document tree.
