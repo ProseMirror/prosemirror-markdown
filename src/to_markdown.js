@@ -355,7 +355,7 @@ class MarkdownSerializerState {
     return false
   }
 
-  // :: (string) → object
+  // :: (string) → { leading: ?string, trailing: ?string }
   // Get leading and trailing whitespace from a string. Values of
   // leading or trailing property of the return object will be undefined
   // if there is no match.
