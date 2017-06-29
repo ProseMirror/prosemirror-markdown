@@ -30,6 +30,6 @@
   "scripts": {
     "test": "mocha test/test-*.js",
     "build": "rimraf dist && buble -i src -o dist",
-    "prepublish": "npm run build"
+    "prepare": "npm run build"
   }
 }
