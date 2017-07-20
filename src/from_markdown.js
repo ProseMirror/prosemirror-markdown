@@ -81,8 +81,11 @@ class MarkdownParseState {
   }
 }
 
-function attrs(given, token) {
-  return given instanceof Function ? given(token) : given
+function attrs(spec, token) {
+  if (spec.getAttrs) return spec.getAttrs(token)
+  // For backwards compatibility when `attrs` is a Function
+  else if (spec.attrs instanceof Function) return spec.attrs(token)
+  else return spec.attrs
 }
 
 // Code content is represented as a single token with a `content`
@@ -95,6 +98,8 @@ function withoutTrailingNewline(str) {
   return str[str.length - 1] == "\n" ? str.slice(0, str.length - 1) : str
 }
 
+function noOp() {}
+
 function tokenHandlers(schema, tokens) {
   let handlers = Object.create(null)
   for (let type in tokens) {
@@ -103,28 +108,35 @@ function tokenHandlers(schema, tokens) {
       let nodeType = schema.nodeType(spec.block)
       if (noOpenClose(type)) {
         handlers[type] = (state, tok) => {
-          state.openNode(nodeType, attrs(spec.attrs, tok))
+          state.openNode(nodeType, attrs(spec, tok))
           state.addText(withoutTrailingNewline(tok.content))
           state.closeNode()
         }
       } else {
-        handlers[type + "_open"] = (state, tok) => state.openNode(nodeType, attrs(spec.attrs, tok))
+        handlers[type + "_open"] = (state, tok) => state.openNode(nodeType, attrs(spec, tok))
         handlers[type + "_close"] = state => state.closeNode()
       }
     } else if (spec.node) {
       let nodeType = schema.nodeType(spec.node)
-      handlers[type] = (state, tok) => state.addNode(nodeType, attrs(spec.attrs, tok))
+      handlers[type] = (state, tok) => state.addNode(nodeType, attrs(spec, tok))
     } else if (spec.mark) {
       let markType = schema.marks[spec.mark]
       if (noOpenClose(type)) {
         handlers[type] = (state, tok) => {
-          state.openMark(markType.create(attrs(spec.attrs, tok)))
+          state.openMark(markType.create(attrs(spec, tok)))
           state.addText(withoutTrailingNewline(tok.content))
           state.closeMark(markType)
         }
       } else {
-        handlers[type + "_open"] = (state, tok) => state.openMark(markType.create(attrs(spec.attrs, tok)))
+        handlers[type + "_open"] = (state, tok) => state.openMark(markType.create(attrs(spec, tok)))
         handlers[type + "_close"] = state => state.closeMark(markType)
+      }
+    } else if (spec.ignore) {
+      if (noOpenClose(type)) {
+        handlers[type] = noOp
+      } else {
+        handlers[type + '_open'] = noOp
+        handlers[type + '_close'] = noOp
       }
     } else {
       throw new RangeError("Unrecognized parsing spec " + JSON.stringify(spec))
@@ -168,12 +180,18 @@ class MarkdownParser {
   //     should add a mark (named by the value) to its content, rather
   //     than wrapping it in a node.
   //
-  // **`attrs`**`: ?union<Object, (MarkdownToken) → Object>`
-  //   : If the mark or node to be created needs attributes, they can
-  //     be either given directly, or as a function that takes a
-  //     [markdown-it
+  // **`attrs`**`: ?Object`
+  //   : Attributes for the node or mark. When `getAttrs` is provided,
+  //     it takes precedence.
+  //
+  // **`getAttrs`**`: ?(MarkdownToken) → Object`
+  //   : A function used to compute the attributes for the node or mark
+  //     that takes a [markdown-it
   //     token](https://markdown-it.github.io/markdown-it/#Token) and
   //     returns an attribute object.
+  //
+  // **`ignore`**`: ?bool`
+  //   : When true, ignore content for the matched token.
   constructor(schema, tokenizer, tokens) {
     // :: Object The value of the `tokens` object used to construct
     // this parser. Can be useful to copy and modify to base other
@@ -205,12 +223,12 @@ const defaultMarkdownParser = new MarkdownParser(schema, markdownit("commonmark"
   paragraph: {block: "paragraph"},
   list_item: {block: "list_item"},
   bullet_list: {block: "bullet_list"},
-  ordered_list: {block: "ordered_list", attrs: tok => ({order: +tok.attrGet("order") || 1})},
-  heading: {block: "heading", attrs: tok => ({level: +tok.tag.slice(1)})},
+  ordered_list: {block: "ordered_list", getAttrs: tok => ({order: +tok.attrGet("order") || 1})},
+  heading: {block: "heading", getAttrs: tok => ({level: +tok.tag.slice(1)})},
   code_block: {block: "code_block"},
-  fence: {block: "code_block", attrs: tok => ({params: tok.info || ""})},
+  fence: {block: "code_block", getAttrs: tok => ({params: tok.info || ""})},
   hr: {node: "horizontal_rule"},
-  image: {node: "image", attrs: tok => ({
+  image: {node: "image", getAttrs: tok => ({
     src: tok.attrGet("src"),
     title: tok.attrGet("title") || null,
     alt: tok.children[0] && tok.children[0].content || null
@@ -219,7 +237,7 @@ const defaultMarkdownParser = new MarkdownParser(schema, markdownit("commonmark"
 
   em: {mark: "em"},
   strong: {mark: "strong"},
-  link: {mark: "link", attrs: tok => ({
+  link: {mark: "link", getAttrs: tok => ({
     href: tok.attrGet("href"),
     title: tok.attrGet("title") || null
   })},

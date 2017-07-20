@@ -21,11 +21,12 @@
   },
   "devDependencies": {
     "buble": "^0.15.1",
-    "punycode": "^1.4.0",
-    "mocha": "^3.0.2",
     "ist": "1.0.0",
-    "rimraf": "^2.5.4",
-    "prosemirror-test-builder": "^0.22.0"
+    "mocha": "^3.0.2",
+    "prosemirror-schema-list": "^0.22.0",
+    "prosemirror-test-builder": "^0.22.0",
+    "punycode": "^1.4.0",
+    "rimraf": "^2.5.4"
   },
   "scripts": {
     "test": "mocha test/test-*.js",
