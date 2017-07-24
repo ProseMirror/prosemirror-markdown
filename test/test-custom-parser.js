@@ -4,7 +4,7 @@ const ist = require("ist")
 const markdownit = require("markdown-it")
 const {schema, MarkdownParser} = require("../dist")
 
-const {doc, blockquote, p} = require("./build")
+const {doc, p} = require("./build")
 
 const md = markdownit("commonmark", {html: false})
 const ignoreBlockquoteParser = new MarkdownParser(schema, md, {
