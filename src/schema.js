@@ -1,6 +1,6 @@
-const {Schema} = require("prosemirror-model")
+import {Schema} from "prosemirror-model"
 
-exports.schema = new Schema({
+export const schema = new Schema({
   nodes: {
     doc: {
       content: "block+"

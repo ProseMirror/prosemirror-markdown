@@ -1,6 +1,6 @@
 // ::- A specification for serializing a ProseMirror document as
 // Markdown/CommonMark text.
-class MarkdownSerializer {
+export class MarkdownSerializer {
   // :: (Object<(state: MarkdownSerializerState, node: Node, parent: Node, index: number)>, Object)
 
   // Construct a serializer with the given configuration. The `nodes`
@@ -41,11 +41,10 @@ class MarkdownSerializer {
     return state.out
   }
 }
-exports.MarkdownSerializer = MarkdownSerializer
 
 // :: MarkdownSerializer
 // A serializer for the [basic schema](#schema).
-const defaultMarkdownSerializer = new MarkdownSerializer({
+export const defaultMarkdownSerializer = new MarkdownSerializer({
   blockquote(state, node) {
     state.wrapBlock("> ", null, node, () => state.renderContent(node))
   },
@@ -114,12 +113,11 @@ const defaultMarkdownSerializer = new MarkdownSerializer({
   },
   code: {open: "`", close: "`"}
 })
-exports.defaultMarkdownSerializer = defaultMarkdownSerializer
 
 // ::- This is an object used to track state and expose
 // methods related to markdown serialization. Instances are passed to
 // node and mark serialization methods (see `toMarkdown`).
-class MarkdownSerializerState {
+export class MarkdownSerializerState {
   constructor(nodes, marks, options) {
     this.nodes = nodes
     this.marks = marks
@@ -367,4 +365,3 @@ class MarkdownSerializerState {
   }
 
 }
-exports.MarkdownSerializerState = MarkdownSerializerState

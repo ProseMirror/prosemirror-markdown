@@ -1,5 +1,5 @@
-const builders = require("prosemirror-test-builder/dist/build")
-const {schema} = require("../dist/schema")
+const {builders} = require("prosemirror-test-builder")
+const {schema} = require("../dist")
 
 module.exports = builders(schema, {
   p: {nodeType: "paragraph"},

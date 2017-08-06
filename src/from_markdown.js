@@ -1,6 +1,6 @@
-const markdownit = require("markdown-it")
-const {schema} = require("./schema")
-const {Mark} = require("prosemirror-model")
+import markdownit from "markdown-it"
+import {schema} from "./schema"
+import {Mark} from "prosemirror-model"
 
 function maybeMerge(a, b) {
   if (a.isText && b.isText && Mark.sameSet(a.marks, b.marks))
@@ -154,7 +154,7 @@ function tokenHandlers(schema, tokens) {
 // [markdown-it](https://github.com/markdown-it/markdown-it) to
 // tokenize a file, and then runs the custom rules it is given over
 // the tokens to create a ProseMirror document tree.
-class MarkdownParser {
+export class MarkdownParser {
   // :: (Schema, MarkdownIt, Object)
   // Create a parser with the given configuration. You can configure
   // the markdown-it parser to parse the dialect you want, and provide
@@ -213,12 +213,11 @@ class MarkdownParser {
     return doc
   }
 }
-exports.MarkdownParser = MarkdownParser
 
 // :: MarkdownParser
 // A parser parsing unextended [CommonMark](http://commonmark.org/),
 // without inline HTML, and producing a document in the basic schema.
-const defaultMarkdownParser = new MarkdownParser(schema, markdownit("commonmark", {html: false}), {
+export const defaultMarkdownParser = new MarkdownParser(schema, markdownit("commonmark", {html: false}), {
   blockquote: {block: "blockquote"},
   paragraph: {block: "paragraph"},
   list_item: {block: "list_item"},
@@ -243,4 +242,3 @@ const defaultMarkdownParser = new MarkdownParser(schema, markdownit("commonmark"
   })},
   code_inline: {mark: "code"}
 })
-exports.defaultMarkdownParser = defaultMarkdownParser
