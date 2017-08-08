@@ -19,11 +19,11 @@ export class MarkdownSerializer {
   // marks can be varied. (For example, you can say `**a *b***` and
   // `*a **b***`, but not `` `a *b*` ``.)
   //
-  // The `expelEnclosingWhitespace` mark property causes the serializer
-  // to move enclosing whitespace from inside the marks to outside the marks.
-  // This is necessary for emphasis marks as CommonMark does not permit
-  // enclosing whitespace inside emphasis marks, see:
-  // http://spec.commonmark.org/0.26/#example-330
+  // The `expelEnclosingWhitespace` mark property causes the
+  // serializer to move enclosing whitespace from inside the marks to
+  // outside the marks. This is necessary for emphasis marks as
+  // CommonMark does not permit enclosing whitespace inside emphasis
+  // marks, see: http://spec.commonmark.org/0.26/#example-330
   constructor(nodes, marks) {
     // :: Object<(MarkdownSerializerState, Node)> The node serializer
     // functions for this serializer.
@@ -100,7 +100,7 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
       }
   },
   text(state, node) {
-    state.text(state.shouldExpelEnclosingWhitespace(node) ? node.text.trim() : node.text)
+    state.text(node.text)
   }
 }, {
   em: {open: "*", close: "*", mixable: true, expelEnclosingWhitespace: true},
@@ -220,9 +220,27 @@ export class MarkdownSerializerState {
   // :: (Node)
   // Render the contents of `parent` as inline content.
   renderInline(parent) {
-    let active = [], whitespace = null
+    let active = [], trailing = ""
     let progress = (node, _, index) => {
       let marks = node ? node.marks : []
+
+      let leading = trailing
+      trailing = ""
+      // If whitespace has to be expelled from the node, adjust
+      // leading and trailing accordingly.
+      if (node && node.isText && marks.some(mark => {
+        let info = this.marks[mark.type.name]
+        return info && info.expelEnclosingWhitespace
+      })) {
+        let [_, lead, inner, trail] = /^(\s*)(.*?)(\s*)$/.exec(node.text)
+        leading += lead
+        trailing = trail
+        if (lead || trail) {
+          node = inner ? node.withText(inner) : null
+          if (!node) marks = active
+        }
+      }
+
       let code = marks.length && marks[marks.length - 1].type.isCode && marks[marks.length - 1]
       let len = marks.length - (code ? 1 : 0)
 
@@ -255,28 +273,18 @@ export class MarkdownSerializerState {
         this.text(this.markString(active.pop(), false), false)
 
       // Output any previously expelled trailing whitespace outside the marks
-      if (whitespace && whitespace.trailing) {
-        this.text(whitespace.trailing)
-        whitespace = null
-      }
-
-      // Output leading and carry forward trailing whitespace if needed
-      if (node && node.isText && this.shouldExpelEnclosingWhitespace(node)) {
-        whitespace = this.getEnclosingWhitespace(node.text)
-        if (whitespace.leading)
-          this.text(whitespace.leading)
-      }
+      if (leading) this.text(leading)
 
       // Open the marks that need to be opened
-      while (active.length < len) {
-        let add = marks[active.length]
-        active.push(add)
-        this.text(this.markString(add, true), false)
-      }
-
-      // Render the node. Special case code marks, since their content
-      // may not be escaped.
       if (node) {
+        while (active.length < len) {
+          let add = marks[active.length]
+          active.push(add)
+          this.text(this.markString(add, true), false)
+        }
+
+        // Render the node. Special case code marks, since their content
+        // may not be escaped.
         if (code && node.isText)
           this.text(this.markString(code, false) + node.text + this.markString(code, true), false)
         else
@@ -337,20 +345,6 @@ export class MarkdownSerializerState {
     let info = this.marks[mark.type.name]
     let value = open ? info.open : info.close
     return typeof value == "string" ? value : value(this, mark)
-  }
-
-  // :: (Node) → bool
-  // Determine if we need to move enclosing whitespace from inside the marks to
-  // the outside (e.g., `<em> foo </em>` becomes ` *foo* `).
-  shouldExpelEnclosingWhitespace(node) {
-    if (!node)
-      return false
-    for (let i = 0; i < node.marks.length; i++) {
-      let mark = node.marks[i]
-      if (this.marks[mark.type.name] && this.marks[mark.type.name].expelEnclosingWhitespace)
-        return true
-    }
-    return false
   }
 
   // :: (string) → { leading: ?string, trailing: ?string }

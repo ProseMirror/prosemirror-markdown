@@ -95,6 +95,9 @@ describe("markdown", () => {
 
   it("expels enclosing whitespace from inside emphasis", () =>
      serialize(doc(p("Some emphasized text with", strong(em("  whitespace   ")), "surrounding the emphasis.")),
-          "Some emphasized text with  ***whitespace***   surrounding the emphasis."))
+               "Some emphasized text with  ***whitespace***   surrounding the emphasis."))
 
+  it("drops nodes when all whitespace is expelled from them", () =>
+     serialize(doc(p("Text with", em(" "), "an emphasized space")),
+               "Text with an emphasized space"))
 })
