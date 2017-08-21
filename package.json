@@ -25,9 +25,8 @@
     "prosemirror-schema-list": "^0.22.0",
     "prosemirror-test-builder": "^0.22.0",
     "punycode": "^1.4.0",
-    "rollup": "^0.45.2",
-    "rollup-plugin-buble": "^0.15.0",
-    "rollup-watch": "^4.3.1"
+    "rollup": "^0.46.0",
+    "rollup-plugin-buble": "^0.15.0"
   },
   "scripts": {
     "test": "mocha test/test-*.js",
