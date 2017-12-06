@@ -43,10 +43,14 @@ describe("markdown", () => {
           doc(ol(li(p("Hello")), li(p("Goodbye")), li(p("Nest"), ol(li(p("Hey")), li(p("Aye"))))))))
 
   it("parses a code block", () =>
-     same("Some code:\n\n    Here it is\n\nPara",
+     same("Some code:\n\n```\nHere it is\n```\n\nPara",
+          doc(p("Some code:"), schema.node("code_block", {params: ""}, [schema.text("Here it is")]), p("Para"))))
+
+  it("parses an intended code block", () =>
+     parse("Some code:\n\n    Here it is\n\nPara",
           doc(p("Some code:"), pre("Here it is"), p("Para"))))
 
-  it("parses a fenced code block", () =>
+  it("parses a fenced code block with info string", () =>
      same("foo\n\n```javascript\n1\n```",
           doc(p("foo"), schema.node("code_block", {params: "javascript"}, [schema.text("1")]))))
 
@@ -100,4 +104,8 @@ describe("markdown", () => {
   it("drops nodes when all whitespace is expelled from them", () =>
      serialize(doc(p("Text with", em(" "), "an emphasized space")),
                "Text with an emphasized space"))
+
+  it("doesn't put a code block after a list item inside the list item", () =>
+     same("* list item\n\n```\ncode\n```",
+          doc(ul(li(p("list item"))), pre("code"))))
 })
