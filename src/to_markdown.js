@@ -49,15 +49,11 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
     state.wrapBlock("> ", null, node, () => state.renderContent(node))
   },
   code_block(state, node) {
-    if (!node.attrs.params) {
-      state.wrapBlock("    ", null, node, () => state.text(node.textContent, false))
-    } else {
-      state.write("```" + node.attrs.params + "\n")
-      state.text(node.textContent, false)
-      state.ensureNewLine()
-      state.write("```")
-      state.closeBlock(node)
-    }
+    state.write("```" + node.attrs.params + "\n")
+    state.text(node.textContent, false)
+    state.ensureNewLine()
+    state.write("```")
+    state.closeBlock(node)
   },
   heading(state, node) {
     state.write(state.repeat("#", node.attrs.level) + " ")
