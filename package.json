@@ -16,7 +16,7 @@
     "url": "git://github.com/prosemirror/prosemirror-markdown.git"
   },
   "dependencies": {
-    "prosemirror-model": "~1.0.0",
+    "prosemirror-model": "^1.0.0",
     "markdown-it": "^6.0.4"
   },
   "devDependencies": {
