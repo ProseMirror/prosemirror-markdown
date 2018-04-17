@@ -232,7 +232,7 @@ export class MarkdownSerializerState {
         let info = this.marks[mark.type.name]
         return info && info.expelEnclosingWhitespace
       })) {
-        let [_, lead, inner, trail] = /^(\s*)(.*?)(\s*)$/.exec(node.text)
+        let [_, lead, inner, trail] = /^(\s*)(.*?)(\s*)$/m.exec(node.text)
         leading += lead
         trailing = trail
         if (lead || trail) {
