@@ -1,3 +1,9 @@
+## 1.0.4 (2018-04-17)
+
+### Bug fixes
+
+Fix crash when serializing marks with line breaks inside of them.
+
 ## 1.0.3 (2018-01-10)
 
 ### Bug fixes
