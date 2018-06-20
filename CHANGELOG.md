@@ -1,3 +1,9 @@
+## 1.1.0 (2018-06-20)
+
+### New features
+
+You can now override the handling of softbreak tokens in a custom handler.
+
 ## 1.0.4 (2018-04-17)
 
 ### Bug fixes
