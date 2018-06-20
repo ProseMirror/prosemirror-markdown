@@ -145,7 +145,7 @@ function tokenHandlers(schema, tokens) {
 
   handlers.text = (state, tok) => state.addText(tok.content)
   handlers.inline = (state, tok) => state.parseTokens(tok.children)
-  handlers.softbreak = state => state.addText("\n")
+  handlers.softbreak = handlers.softbreak || (state => state.addText("\n"))
 
   return handlers
 }
