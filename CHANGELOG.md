@@ -1,3 +1,9 @@
+## 1.1.1 (2018-07-08)
+
+### Bug fixes
+
+Fix bug that caused superfluous backslashes to be inserted at the start of some lines when serializing to Markdown.
+
 ## 1.1.0 (2018-06-20)
 
 ### New features
