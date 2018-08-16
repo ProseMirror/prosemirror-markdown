@@ -96,7 +96,9 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
       }
   },
   text(state, node) {
-    state.text(node.text)
+    let marks = node ? node.marks : []
+    let code = marks.length && marks[marks.length - 1].type.isCode && marks[marks.length - 1]
+    state.text(node.text, !code)
   }
 }, {
   em: {open: "*", close: "*", mixable: true, expelEnclosingWhitespace: true},
