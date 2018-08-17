@@ -111,4 +111,7 @@ describe("markdown", () => {
   it("doesn't put a code block after a list item inside the list item", () =>
      same("* list item\n\n```\ncode\n```",
           doc(ul(li(p("list item"))), pre("code"))))
+
+  it("doesn't escape characters in code", () =>
+     same("foo`*`", doc(p("foo", code("*")))))
 })

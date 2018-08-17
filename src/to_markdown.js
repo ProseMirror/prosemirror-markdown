@@ -2,7 +2,6 @@
 // Markdown/CommonMark text.
 export class MarkdownSerializer {
   // :: (Object<(state: MarkdownSerializerState, node: Node, parent: Node, index: number)>, Object)
-
   // Construct a serializer with the given configuration. The `nodes`
   // object should map node names in a given schema to function that
   // take a serializer state and such a node, and serialize the node.
@@ -18,6 +17,10 @@ export class MarkdownSerializer {
   // opening and closing syntax appears relative to other mixable
   // marks can be varied. (For example, you can say `**a *b***` and
   // `*a **b***`, but not `` `a *b*` ``.)
+  //
+  // To disable character escaping in a mark, you can give it an
+  // `escape` property of `false`. Such a mark has to have the highest
+  // precedence (must always be the innermost mark).
   //
   // The `expelEnclosingWhitespace` mark property causes the
   // serializer to move enclosing whitespace from inside the marks to
@@ -107,7 +110,7 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
       return "](" + state.esc(mark.attrs.href) + (mark.attrs.title ? " " + state.quote(mark.attrs.title) : "") + ")"
     }
   },
-  code: {open: "`", close: "`"}
+  code: {open: "`", close: "`", escape: false}
 })
 
 // ::- This is an object used to track state and expose
@@ -237,8 +240,8 @@ export class MarkdownSerializerState {
         }
       }
 
-      let code = marks.length && marks[marks.length - 1].type.isCode && marks[marks.length - 1]
-      let len = marks.length - (code ? 1 : 0)
+      let inner = marks.length && marks[marks.length - 1], noEsc = inner && this.marks[inner.type.name].escape === false
+      let len = marks.length - (noEsc ? 1 : 0)
 
       // Try to reorder 'mixable' marks, such as em and strong, which
       // in Markdown may be opened and closed in different order, so
@@ -281,8 +284,8 @@ export class MarkdownSerializerState {
 
         // Render the node. Special case code marks, since their content
         // may not be escaped.
-        if (code && node.isText)
-          this.text(this.markString(code, false) + node.text + this.markString(code, true), false)
+        if (noEsc && node.isText)
+          this.text(this.markString(inner, false) + node.text + this.markString(inner, true), false)
         else
           this.render(node, parent, index)
       }
