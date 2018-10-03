@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "prosemirror-model": "^1.0.0",
-    "markdown-it": "^6.0.4"
+    "markdown-it": "^8.4.2"
   },
   "devDependencies": {
     "ist": "1.0.0",
