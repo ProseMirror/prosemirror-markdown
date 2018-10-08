@@ -1,3 +1,13 @@
+## 1.2.0 (2018-10-08)
+
+### Bug fixes
+
+Fixes an issue where the Markdown serializer would escape special characters in inline code.
+
+### New features
+
+Upgrade the markdown-it dependency to version 8.
+
 ## 1.1.1 (2018-07-08)
 
 ### Bug fixes
