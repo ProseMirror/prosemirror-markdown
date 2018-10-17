@@ -285,7 +285,7 @@ export class MarkdownSerializerState {
         // Render the node. Special case code marks, since their content
         // may not be escaped.
         if (noEsc && node.isText)
-          this.text(this.markString(inner, false) + node.text + this.markString(inner, true), false)
+          this.text(this.markString(inner, true) + node.text + this.markString(inner, false), false)
         else
           this.render(node, parent, index)
       }
