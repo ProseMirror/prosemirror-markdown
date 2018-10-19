@@ -1,3 +1,9 @@
+## 1.2.1 (2018-10-19)
+
+### Bug fixes
+
+Fixes a bug where inline mark delimiters were serialized incorrectly (the closing and opening marks were swapped, which was only noticeable when they are different).
+
 ## 1.2.0 (2018-10-08)
 
 ### Bug fixes
