@@ -221,7 +221,17 @@ export class MarkdownSerializerState {
   renderInline(parent) {
     let active = [], trailing = ""
     let progress = (node, _, index) => {
-      let marks = node ? node.marks : []
+      let marks = []
+
+      // Remove `strong` and `em` marks from `hard_break` nodes to prevent
+      // parser edge cases with new lines just before closing marks.
+      if (node && node.type.name === "hard_break") {
+        for (let i = 0; i < node.marks.length; i++) {
+          let mark = node.marks[i]
+          if (["strong", "em"].indexOf(mark.type.name) === -1) marks.push(mark)
+        }
+      }
+      else if (node) marks = node.marks
 
       let leading = trailing
       trailing = ""
