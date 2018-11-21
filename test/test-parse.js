@@ -104,6 +104,18 @@ describe("markdown", () => {
      serialize(doc(p("Some emphasized text with", strong(em("  whitespace   ")), "surrounding the emphasis.")),
                "Some emphasized text with  ***whitespace***   surrounding the emphasis."))
 
+  it("puts trailing hard break out of emphasised content", () =>
+     serialize(doc(p("text1", strong(em("before break", br)), "text2")),
+               "text1***before break***\\\ntext2"))
+
+  it("splits emphasised content on surrounded hard break", () =>
+     serialize(doc(p("text1", strong(em("before break", br, "after break")), "text2")),
+               "text1***before break***\\\n***after break***text2"))
+
+  it("does not split links on surrounded hard break", () =>
+     serialize(doc(p(a("before break", br, "after break"))),
+               "[before break\\\nafter break](foo)"))
+
   it("drops nodes when all whitespace is expelled from them", () =>
      serialize(doc(p("Text with", em(" "), "an emphasized space")),
                "Text with an emphasized space"))
