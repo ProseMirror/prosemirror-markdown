@@ -221,17 +221,19 @@ export class MarkdownSerializerState {
   renderInline(parent) {
     let active = [], trailing = ""
     let progress = (node, _, index) => {
-      let marks = []
+      let marks = node ? node.marks : []
 
-      // Remove `strong` and `em` marks from `hard_break` nodes to prevent
-      // parser edge cases with new lines just before closing marks.
-      if (node && node.type.name === "hard_break") {
-        for (let i = 0; i < node.marks.length; i++) {
-          let mark = node.marks[i]
-          if (["strong", "em"].indexOf(mark.type.name) === -1) marks.push(mark)
-        }
-      }
-      else if (node) marks = node.marks
+      // Remove marks from `hard_break` that are the last node inside
+      // that mark to prevent parser edge cases with new lines just
+      // before closing marks.
+      // (FIXME it'd be nice if we had a schema-agnostic way to
+      // identify nodes that serialize as hard breaks)
+      if (node && node.type.name === "hard_break")
+        marks = marks.filter(m => {
+          if (index + 1 == parent.childCount) return false
+          let next = parent.child(index + 1)
+          return m.isInSet(next.marks) && (!next.isText || /\S/.test(next.text))
+        })
 
       let leading = trailing
       trailing = ""
