@@ -47,7 +47,9 @@ export const schema = new Schema({
       code: true,
       defining: true,
       attrs: {params: {default: ""}},
-      parseDOM: [{tag: "pre", preserveWhitespace: true, getAttrs: node => ({params: node.getAttribute("data-params")})}],
+      parseDOM: [{tag: "pre", preserveWhitespace: true, getAttrs: node => (
+        {params: node.getAttribute("data-params") || ""}
+      )}],
       toDOM(node) { return ["pre", node.attrs.params ? {"data-params": node.attrs.params} : {}, ["code", 0]] }
     },
 
