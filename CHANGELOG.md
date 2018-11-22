@@ -1,3 +1,9 @@
+## 1.2.2 (2018-11-22)
+
+### Bug fixes
+
+Hard breaks at the end of an emphasized or strong mark are no longer serialized to invalid Markdown text.
+
 ## 1.2.1 (2018-10-19)
 
 ### Bug fixes
