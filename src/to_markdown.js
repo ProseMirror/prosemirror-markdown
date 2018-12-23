@@ -110,7 +110,21 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
       return "](" + state.esc(mark.attrs.href) + (mark.attrs.title ? " " + state.quote(mark.attrs.title) : "") + ")"
     }
   },
-  code: {open: "`", close: "`", escape: false}
+  code: {
+    open(state, mark, backtickCount) {
+      const backticks = state.repeat('`', backtickCount + 1)
+      const spaceOrNoSpace = backtickCount > 0 ? ' ' : ''
+
+      return backticks + spaceOrNoSpace
+    },
+    close(state, mark, backtickCount) {
+      const backticks = state.repeat('`', backtickCount + 1)
+      const spaceOrNoSpace = backtickCount > 0 ? ' ' : ''
+
+      return spaceOrNoSpace + backticks
+    },
+    escape: false
+  }
 })
 
 // ::- This is an object used to track state and expose
@@ -296,8 +310,18 @@ export class MarkdownSerializerState {
 
         // Render the node. Special case code marks, since their content
         // may not be escaped.
-        if (noEsc && node.isText)
-          this.text(this.markString(inner, true) + node.text + this.markString(inner, false), false)
+        if (noEsc && node.isText) {
+          let backtickCount = 0
+          const backtickMatches = node.text.match(/(`+)/g)
+          if (backtickMatches) {
+            // Find the longest match
+            backtickMatches.sort((a, b) => b.length - a.length)
+
+            backtickCount += backtickMatches[0].length
+          }
+
+          this.text(this.markString(inner, true, backtickCount) + node.text + this.markString(inner, false, backtickCount), false)
+        }
         else
           this.render(node, parent, index)
       }
@@ -350,12 +374,12 @@ export class MarkdownSerializerState {
     return out
   }
 
-  // : (Mark, bool) → string
+  // : (Mark, bool, integer) → string
   // Get the markdown string for a given opening or closing mark.
-  markString(mark, open) {
+  markString(mark, open, backtickCount) {
     let info = this.marks[mark.type.name]
     let value = open ? info.open : info.close
-    return typeof value == "string" ? value : value(this, mark)
+    return typeof value == "string" ? value : value(this, mark, backtickCount)
   }
 
   // :: (string) → { leading: ?string, trailing: ?string }

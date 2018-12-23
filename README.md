@@ -117,7 +117,11 @@ Markdown/CommonMark text.
 
    To disable character escaping in a mark, you can give it an
    `escape` property of `false`. Such a mark has to have the highest
-   precedence (must always be the innermost mark).
+   precedence (must always be the innermost mark). When `escape` is
+   `false`, the `open` and `close` functions are passed a third
+   `backtickCount` argument representing the number of backticks
+   present inside the text content covered by the mark, so that the
+   opening and closing delimiters can be determined dynamically.
 
    The `expelEnclosingWhitespace` mark property causes the
    serializer to move enclosing whitespace from inside the marks to
@@ -203,5 +207,3 @@ node and mark serialization methods (see `toMarkdown`).
 
  * **`defaultMarkdownSerializer`**`: MarkdownSerializer`\
    A serializer for the [basic schema](#schema).
-
-
