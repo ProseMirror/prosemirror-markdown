@@ -70,6 +70,14 @@ describe("markdown", () => {
      same("**`code` is bold**",
           doc(p(strong(code("code"), " is bold")))))
 
+  it("parses code mark containing backticks", () =>
+     same("``` one backtick: ` two backticks: `` ```",
+          doc(p(code("one backtick: ` two backticks: ``")))))
+
+  it("parses code mark containing only whitespace", () =>
+     serialize(doc(p("Three spaces: ", code("   "))),
+               "Three spaces: `   `"))
+
   it("parses links", () =>
      same("My [link](foo) goes to foo",
           doc(p("My ", a("link"), " goes to foo"))))
@@ -103,18 +111,6 @@ describe("markdown", () => {
   it("expels enclosing whitespace from inside emphasis", () =>
      serialize(doc(p("Some emphasized text with", strong(em("  whitespace   ")), "surrounding the emphasis.")),
                "Some emphasized text with  ***whitespace***   surrounding the emphasis."))
-
-  it("puts trailing hard break out of emphasised content", () =>
-     serialize(doc(p("text1", strong(em("before break", br)), "text2")),
-               "text1***before break***\\\ntext2"))
-
-  it("puts trailing hard break out of emphasised content", () =>
-     serialize(doc(p("text1 ", strong(em("before break", br)), "text2")),
-               "text1 ***before break***\\\ntext2"))
-
-  it("leaves non-trailing hard break in emphasized content", () =>
-     serialize(doc(p("text1 ", strong(em("before break", br, "after break")), " text2")),
-               "text1 ***before break\\\nafter break*** text2"))
 
   it("drops nodes when all whitespace is expelled from them", () =>
      serialize(doc(p("Text with", em(" "), "an emphasized space")),
