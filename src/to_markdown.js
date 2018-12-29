@@ -10,7 +10,9 @@ export class MarkdownSerializer {
   // properties, which hold the strings that should appear before and
   // after a piece of text marked that way, either directly or as a
   // function that takes a serializer state and a mark, and returns a
-  // string.
+  // string. `open` and `close` can also be functions, which will be
+  // called with the serializer state, the mark, and, if the mark spec
+  // also has `escape: false`, the text content of the mark.
   //
   // Mark information objects can also have a `mixable` property
   // which, when `true`, indicates that the order in which the mark's
@@ -110,8 +112,19 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
       return "](" + state.esc(mark.attrs.href) + (mark.attrs.title ? " " + state.quote(mark.attrs.title) : "") + ")"
     }
   },
-  code: {open: "`", close: "`", escape: false}
+  code: {open(_state, _mark, text) { return backticksFor(text, -1) },
+         close(_state, _mark, text) { return backticksFor(text, 1) },
+         escape: false}
 })
+
+function backticksFor(text, side) {
+  let ticks = /`+/g, m, len = 0
+  while (m = ticks.exec(text)) len = Math.max(len, m[0].length)
+  let result = len > 0 && side > 0 ? " `" : "`"
+  for (let i = 0; i < len; i++) result += "`"
+  if (len > 0 && side < 0) result += " "
+  return result
+}
 
 // ::- This is an object used to track state and expose
 // methods related to markdown serialization. Instances are passed to
@@ -297,7 +310,8 @@ export class MarkdownSerializerState {
         // Render the node. Special case code marks, since their content
         // may not be escaped.
         if (noEsc && node.isText)
-          this.text(this.markString(inner, true) + node.text + this.markString(inner, false), false)
+          this.text(this.markString(inner, true, node.text) + node.text +
+                    this.markString(inner, false, node.text), false)
         else
           this.render(node, parent, index)
       }
@@ -350,12 +364,12 @@ export class MarkdownSerializerState {
     return out
   }
 
-  // : (Mark, bool) → string
+  // : (Mark, bool, string?) → string
   // Get the markdown string for a given opening or closing mark.
-  markString(mark, open) {
+  markString(mark, open, content) {
     let info = this.marks[mark.type.name]
     let value = open ? info.open : info.close
-    return typeof value == "string" ? value : value(this, mark)
+    return typeof value == "string" ? value : value(this, mark, content)
   }
 
   // :: (string) → { leading: ?string, trailing: ?string }
