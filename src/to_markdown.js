@@ -112,16 +112,16 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
   em: {open: "*", close: "*", mixable: true, expelEnclosingWhitespace: true},
   strong: {open: "**", close: "**", mixable: true, expelEnclosingWhitespace: true},
   link: {
-    open(_state, mark, _text, parent, index) {
+    open(_state, mark, parent, index) {
       return isPlainURL(mark, parent, index, 1) ? "<" : "["
     },
-    close(state, mark, _text, parent, index) {
+    close(state, mark, parent, index) {
       return isPlainURL(mark, parent, index, -1) ? ">"
         : "](" + state.esc(mark.attrs.href) + (mark.attrs.title ? " " + state.quote(mark.attrs.title) : "") + ")"
     }
   },
   code: {open(_state, _mark, parent, index) { return backticksFor(parent.child(index), -1) },
-         close(_state, _mark, parent, index)) { return backticksFor(parent.child(index - 1), 1) },
+         close(_state, _mark, parent, index) { return backticksFor(parent.child(index - 1), 1) },
          escape: false}
 })
 
