@@ -3,7 +3,7 @@ const ist = require("ist")
 
 const {schema, defaultMarkdownParser, defaultMarkdownSerializer} = require("../dist")
 
-const {doc, blockquote, h1, h2, p, hr, li, ol, ul, pre, em, strong, code, a, br, img} = require("./build")
+const {doc, blockquote, h1, h2, p, hr, li, ol, ul, pre, em, strong, code, a, link, br, img} = require("./build")
 
 function parse(text, doc) {
   ist(defaultMarkdownParser.parse(text), doc, eq)
@@ -81,6 +81,14 @@ describe("markdown", () => {
   it("parses links", () =>
      same("My [link](foo) goes to foo",
           doc(p("My ", a("link"), " goes to foo"))))
+
+  it("parses urls", () =>
+     same("Link to <https://prosemirror.net>",
+          doc(p("Link to ", link({href: "https://prosemirror.net"}, "https://prosemirror.net")))))
+
+  it("parses emphasized urls", () =>
+     same("Link to *<https://prosemirror.net>*",
+          doc(p("Link to ", em(link({href: "https://prosemirror.net"}, "https://prosemirror.net"))))))
 
   it("parses an image", () =>
      same("Here's an image: ![x](img.png)",

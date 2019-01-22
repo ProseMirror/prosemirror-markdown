@@ -11,8 +11,15 @@ export class MarkdownSerializer {
   // after a piece of text marked that way, either directly or as a
   // function that takes a serializer state and a mark, and returns a
   // string. `open` and `close` can also be functions, which will be
-  // called with the serializer state, the mark, and, if the mark spec
-  // also has `escape: false`, the text content of the mark.
+  // called as
+  //
+  //     (state: MarkdownSerializerState, mark: Mark, text: string?,
+  //      parent: Fragment, index: number) → string
+  //
+  // Where `text` will only be present when the mark serializer also
+  // has `escape: false`, in which case it'll contain the text of the
+  // marked node. `parent` and `index` allow you to inspect the mark's
+  // context to see which nodes it applies to.
   //
   // Mark information objects can also have a `mixable` property
   // which, when `true`, indicates that the order in which the mark's
@@ -107,9 +114,12 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
   em: {open: "*", close: "*", mixable: true, expelEnclosingWhitespace: true},
   strong: {open: "**", close: "**", mixable: true, expelEnclosingWhitespace: true},
   link: {
-    open: "[",
-    close(state, mark) {
-      return "](" + state.esc(mark.attrs.href) + (mark.attrs.title ? " " + state.quote(mark.attrs.title) : "") + ")"
+    open(_state, mark, _text, parent, index) {
+      return isPlainURL(mark, parent, index, 1) ? "<" : "["
+    },
+    close(state, mark, _text, parent, index) {
+      return isPlainURL(mark, parent, index, -1) ? ">"
+        : "](" + state.esc(mark.attrs.href) + (mark.attrs.title ? " " + state.quote(mark.attrs.title) : "") + ")"
     }
   },
   code: {open(_state, _mark, text) { return backticksFor(text, -1) },
@@ -124,6 +134,15 @@ function backticksFor(text, side) {
   for (let i = 0; i < len; i++) result += "`"
   if (len > 0 && side < 0) result += " "
   return result
+}
+
+function isPlainURL(link, parent, index, side) {
+  if (link.attrs.title) return false
+  let content = parent.child(index + (side < 0 ? -1 : 0))
+  if (!content.isText || content.text != link.attrs.href || content.marks[content.marks.length - 1] != link) return false
+  if (index == (side < 0 ? 1 : parent.childCount - 1)) return true
+  let next = parent.child(index + (side < 0 ? -2 : 1))
+  return !link.isInSet(next.marks)
 }
 
 // ::- This is an object used to track state and expose
@@ -294,7 +313,7 @@ export class MarkdownSerializerState {
 
       // Close the marks that need to be closed
       while (keep < active.length)
-        this.text(this.markString(active.pop(), false), false)
+        this.text(this.markString(active.pop(), false, null, parent, index), false)
 
       // Output any previously expelled trailing whitespace outside the marks
       if (leading) this.text(leading)
@@ -304,20 +323,20 @@ export class MarkdownSerializerState {
         while (active.length < len) {
           let add = marks[active.length]
           active.push(add)
-          this.text(this.markString(add, true), false)
+          this.text(this.markString(add, true, null, parent, index), false)
         }
 
         // Render the node. Special case code marks, since their content
         // may not be escaped.
         if (noEsc && node.isText)
-          this.text(this.markString(inner, true, node.text) + node.text +
-                    this.markString(inner, false, node.text), false)
+          this.text(this.markString(inner, true, node.text, parent, index) + node.text +
+                    this.markString(inner, false, node.text, parent, index + 1), false)
         else
           this.render(node, parent, index)
       }
     }
     parent.forEach(progress)
-    progress(null)
+    progress(null, null, parent.childCount)
   }
 
   // :: (Node, string, (number) → string)
@@ -366,10 +385,10 @@ export class MarkdownSerializerState {
 
   // : (Mark, bool, string?) → string
   // Get the markdown string for a given opening or closing mark.
-  markString(mark, open, content) {
+  markString(mark, open, content, parent, index) {
     let info = this.marks[mark.type.name]
     let value = open ? info.open : info.close
-    return typeof value == "string" ? value : value(this, mark, content)
+    return typeof value == "string" ? value : value(this, mark, content, parent, index)
   }
 
   // :: (string) → { leading: ?string, trailing: ?string }
