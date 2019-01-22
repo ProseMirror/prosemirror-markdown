@@ -1,3 +1,15 @@
+## 1.3.0 (2019-01-22)
+
+### Bug fixes
+
+Inline code containing backticks is now serialized wrapped in the appropriate amount of backticks.
+
+### New features
+
+The serializer now serializes links whose target is the same as their text content using \< \> syntax.
+
+Mark opening and close string callbacks now get passed the mark's context (parent fragment and index).
+
 ## 1.2.2 (2018-11-22)
 
 ### Bug fixes
