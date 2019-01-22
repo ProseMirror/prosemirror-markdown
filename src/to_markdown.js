@@ -13,12 +13,10 @@ export class MarkdownSerializer {
   // string. `open` and `close` can also be functions, which will be
   // called as
   //
-  //     (state: MarkdownSerializerState, mark: Mark, text: string?,
+  //     (state: MarkdownSerializerState, mark: Mark,
   //      parent: Fragment, index: number) → string
   //
-  // Where `text` will only be present when the mark serializer also
-  // has `escape: false`, in which case it'll contain the text of the
-  // marked node. `parent` and `index` allow you to inspect the mark's
+  // Where `parent` and `index` allow you to inspect the mark's
   // context to see which nodes it applies to.
   //
   // Mark information objects can also have a `mixable` property
@@ -122,14 +120,14 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
         : "](" + state.esc(mark.attrs.href) + (mark.attrs.title ? " " + state.quote(mark.attrs.title) : "") + ")"
     }
   },
-  code: {open(_state, _mark, text) { return backticksFor(text, -1) },
-         close(_state, _mark, text) { return backticksFor(text, 1) },
+  code: {open(_state, _mark, parent, index) { return backticksFor(parent.child(index), -1) },
+         close(_state, _mark, parent, index)) { return backticksFor(parent.child(index - 1), 1) },
          escape: false}
 })
 
-function backticksFor(text, side) {
+function backticksFor(node, side) {
   let ticks = /`+/g, m, len = 0
-  while (m = ticks.exec(text)) len = Math.max(len, m[0].length)
+  if (node.isText) while (m = ticks.exec(node.text)) len = Math.max(len, m[0].length)
   let result = len > 0 && side > 0 ? " `" : "`"
   for (let i = 0; i < len; i++) result += "`"
   if (len > 0 && side < 0) result += " "
@@ -313,7 +311,7 @@ export class MarkdownSerializerState {
 
       // Close the marks that need to be closed
       while (keep < active.length)
-        this.text(this.markString(active.pop(), false, null, parent, index), false)
+        this.text(this.markString(active.pop(), false, parent, index), false)
 
       // Output any previously expelled trailing whitespace outside the marks
       if (leading) this.text(leading)
@@ -323,14 +321,14 @@ export class MarkdownSerializerState {
         while (active.length < len) {
           let add = marks[active.length]
           active.push(add)
-          this.text(this.markString(add, true, null, parent, index), false)
+          this.text(this.markString(add, true, parent, index), false)
         }
 
         // Render the node. Special case code marks, since their content
         // may not be escaped.
         if (noEsc && node.isText)
-          this.text(this.markString(inner, true, node.text, parent, index) + node.text +
-                    this.markString(inner, false, node.text, parent, index + 1), false)
+          this.text(this.markString(inner, true, parent, index) + node.text +
+                    this.markString(inner, false, parent, index + 1), false)
         else
           this.render(node, parent, index)
       }
@@ -385,10 +383,10 @@ export class MarkdownSerializerState {
 
   // : (Mark, bool, string?) → string
   // Get the markdown string for a given opening or closing mark.
-  markString(mark, open, content, parent, index) {
+  markString(mark, open, parent, index) {
     let info = this.marks[mark.type.name]
     let value = open ? info.open : info.close
-    return typeof value == "string" ? value : value(this, mark, content, parent, index)
+    return typeof value == "string" ? value : value(this, mark, parent, index)
   }
 
   // :: (string) → { leading: ?string, trailing: ?string }
@@ -401,5 +399,4 @@ export class MarkdownSerializerState {
       trailing: (text.match(/(\s+)$/) || [])[0]
     }
   }
-
 }
