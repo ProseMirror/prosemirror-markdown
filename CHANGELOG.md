@@ -1,3 +1,9 @@
+## 1.3.1 (2019-06-08)
+
+### Bug fixes
+
+Fix a bug that could occur when parsing multiple adjacent pieces of text with the same style.
+
 ## 1.3.0 (2019-01-22)
 
 ### Bug fixes
