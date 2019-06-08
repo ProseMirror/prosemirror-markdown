@@ -4,7 +4,7 @@ import {Mark} from "prosemirror-model"
 
 function maybeMerge(a, b) {
   if (a.isText && b.isText && Mark.sameSet(a.marks, b.marks))
-    return a.copy(a.text + b.text)
+    return a.withText(a.text + b.text)
 }
 
 // Object used to track the context of a running parse.
