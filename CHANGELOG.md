@@ -1,3 +1,11 @@
+## 1.3.2 (2019-10-30)
+
+### Bug fixes
+
+Code blocks in the schema no longer allow marks inside them.
+
+Code blocks are now parsed with `preserveWhiteSpace: full`, preventing removal of newline characters.
+
 ## 1.3.1 (2019-06-08)
 
 ### Bug fixes
