@@ -46,8 +46,9 @@ export const schema = new Schema({
       group: "block",
       code: true,
       defining: true,
+      marks: "",
       attrs: {params: {default: ""}},
-      parseDOM: [{tag: "pre", preserveWhitespace: true, getAttrs: node => (
+      parseDOM: [{tag: "pre", preserveWhitespace: "full", getAttrs: node => (
         {params: node.getAttribute("data-params") || ""}
       )}],
       toDOM(node) { return ["pre", node.attrs.params ? {"data-params": node.attrs.params} : {}, ["code", 0]] }
@@ -83,8 +84,7 @@ export const schema = new Schema({
     },
 
     text: {
-      group: "inline",
-      toDOM(node) { return node.text }
+      group: "inline"
     },
 
     image: {
