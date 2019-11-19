@@ -1,7 +1,7 @@
 const {eq} = require("prosemirror-test-builder")
 const ist = require("ist")
 
-const {schema, defaultMarkdownParser, defaultMarkdownSerializer} = require("../dist")
+const {schema, defaultMarkdownParser, defaultMarkdownSerializer} = require("..")
 
 const {doc, blockquote, h1, h2, p, hr, li, ol, ul, pre, em, strong, code, a, link, br, img} = require("./build")
 

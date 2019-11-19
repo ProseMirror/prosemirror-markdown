@@ -2,7 +2,7 @@ const {eq} = require("prosemirror-test-builder")
 const ist = require("ist")
 
 const markdownit = require("markdown-it")
-const {schema, MarkdownParser} = require("../dist")
+const {schema, MarkdownParser} = require("..")
 
 const {doc, p, hard_break} = require("./build")
 
