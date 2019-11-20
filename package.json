@@ -3,7 +3,7 @@
   "version": "1.4.1",
   "description": "ProseMirror Markdown integration",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "module": "dist/index.es.js",
   "license": "MIT",
   "maintainers": [
     {
