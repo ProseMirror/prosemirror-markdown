@@ -1,6 +1,6 @@
 {
   "name": "prosemirror-markdown",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "ProseMirror Markdown integration",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
