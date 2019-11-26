@@ -8,7 +8,7 @@ contentEditable, with support for collaborative editing and custom
 document schemas.
 
 This module implements a ProseMirror
-[schema](http://prosemirror\.net/docs/guide/#schema) that corresponds to
+[schema](https://prosemirror.net/docs/guide/#schema) that corresponds to
 the document schema used by [CommonMark](http://commonmark.org/), and
 a parser and serializer to convert between ProseMirror documents in
 that schema and CommonMark/Markdown text.

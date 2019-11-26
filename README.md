@@ -1,14 +1,14 @@
 # prosemirror-markdown
 
-[ [**WEBSITE**](http://prosemirror.net) | [**ISSUES**](https://github.com/prosemirror/prosemirror-markdown/issues) | [**FORUM**](https://discuss.prosemirror.net) | [**GITTER**](https://gitter.im/ProseMirror/prosemirror) ]
+[ [**WEBSITE**](https://prosemirror.net) | [**ISSUES**](https://github.com/prosemirror/prosemirror-markdown/issues) | [**FORUM**](https://discuss.prosemirror.net) | [**GITTER**](https://gitter.im/ProseMirror/prosemirror) ]
 
-This is a (non-core) module for [ProseMirror](http://prosemirror.net).
+This is a (non-core) module for [ProseMirror](https://prosemirror.net).
 ProseMirror is a well-behaved rich semantic content editor based on
 contentEditable, with support for collaborative editing and custom
 document schemas.
 
 This module implements a ProseMirror
-[schema](http://prosemirror\.net/docs/guide/#schema) that corresponds to
+[schema](https://prosemirror.net/docs/guide/#schema) that corresponds to
 the document schema used by [CommonMark](http://commonmark.org/), and
 a parser and serializer to convert between ProseMirror documents in
 that schema and CommonMark/Markdown text.
