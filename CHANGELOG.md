@@ -1,3 +1,9 @@
+## 1.4.3 (2019-12-17)
+
+### Bug fixes
+
+Don't use short-hand angle bracket syntax when outputting self-linking URLs that are relative.
+
 ## 1.4.2 (2019-11-20)
 
 ### Bug fixes
