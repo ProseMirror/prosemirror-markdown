@@ -86,6 +86,11 @@ describe("markdown", () => {
      same("Link to <https://prosemirror.net>",
           doc(p("Link to ", link({href: "https://prosemirror.net"}, "https://prosemirror.net")))))
 
+  it("correctly serializes relative urls", () => {
+    same("[foo.html](foo.html)",
+         doc(p(link({href: "foo.html"}, "foo.html"))))
+  })
+
   it("parses emphasized urls", () =>
      same("Link to *<https://prosemirror.net>*",
           doc(p("Link to ", em(link({href: "https://prosemirror.net"}, "https://prosemirror.net"))))))
