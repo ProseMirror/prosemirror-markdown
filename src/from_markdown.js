@@ -222,7 +222,7 @@ export const defaultMarkdownParser = new MarkdownParser(schema, markdownit("comm
   paragraph: {block: "paragraph"},
   list_item: {block: "list_item"},
   bullet_list: {block: "bullet_list"},
-  ordered_list: {block: "ordered_list", getAttrs: tok => ({order: +tok.attrGet("order") || 1})},
+  ordered_list: {block: "ordered_list", getAttrs: tok => ({order: +tok.attrGet("start") || 1})},
   heading: {block: "heading", getAttrs: tok => ({level: +tok.tag.slice(1)})},
   code_block: {block: "code_block"},
   fence: {block: "code_block", getAttrs: tok => ({params: tok.info || ""})},
