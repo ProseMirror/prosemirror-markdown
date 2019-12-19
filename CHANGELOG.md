@@ -1,3 +1,9 @@
+## 1.4.4 (2019-12-19)
+
+### Bug fixes
+
+Fix issue that broke parsing ordered lists with a starting number other than 1.
+
 ## 1.4.3 (2019-12-17)
 
 ### Bug fixes
