@@ -1,3 +1,9 @@
+## 1.4.5 (2020-05-14)
+
+### Bug fixes
+
+Don't allow hard_break nodes in headings.
+
 ## 1.4.4 (2019-12-19)
 
 ### Bug fixes
