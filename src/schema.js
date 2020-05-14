@@ -29,7 +29,7 @@ export const schema = new Schema({
 
     heading: {
       attrs: {level: {default: 1}},
-      content: "inline*",
+      content: "(text | image)*",
       group: "block",
       defining: true,
       parseDOM: [{tag: "h1", attrs: {level: 1}},
