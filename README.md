@@ -56,7 +56,7 @@ the tokens to create a ProseMirror document tree.
        appended to the base token name provides a the object
        property), and wraps a block of content. The block should be
        wrapped in a node of the type named to by the property's
-       value.
+       value. If the token does not have `_open` or `_close`, use the `noOpenClose` option.
 
    **`mark`**`: ?string`
      : This token also comes in `_open` and `_close` variants, but
@@ -72,6 +72,11 @@ the tokens to create a ProseMirror document tree.
        that takes a [markdown-it
        token](https://markdown-it.github.io/markdown-it/#Token) and
        returns an attribute object.
+
+   **`noOpenClose`**`: ?boolean`
+     : Indicates that the [markdown-it
+       token](https://markdown-it.github.io/markdown-it/#Token) has no `_open` or `_close` for the nodes.
+       This defaults to `true` for `code_inline`, `code_block` and `fence`.
 
    **`ignore`**`: ?bool`
      : When true, ignore content for the matched token.
