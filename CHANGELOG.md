@@ -1,3 +1,9 @@
+## 1.5.0 (2020-07-17)
+
+### New features
+
+Markdown parse specs can now be specified as `noCloseToken`, which will cause the parser to treat them as a single token, rather than a pair of `_open`/`_close` tokens.
+
 ## 1.4.5 (2020-05-14)
 
 ### Bug fixes
