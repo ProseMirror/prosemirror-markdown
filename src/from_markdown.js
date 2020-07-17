@@ -169,17 +169,18 @@ export class MarkdownParser {
   //     `block`, or `mark` must be set.
   //
   // **`block`**`: ?string`
-  //   : This token comes in `_open` and `_close` variants (which are
-  //     appended to the base token name provides a the object
-  //     property), and wraps a block of content. The block should be
-  //     wrapped in a node of the type named to by the property's
-  //     value. If the token does not have `_open` or `_close`, use
-  //     the `noCloseToken` option.
+  //   : This token (unless `noCloseToken` is true) comes in `_open`
+  //     and `_close` variants (which are appended to the base token
+  //     name provides a the object property), and wraps a block of
+  //     content. The block should be wrapped in a node of the type
+  //     named to by the property's value. If the token does not have
+  //     `_open` or `_close`, use the `noCloseToken` option.
   //
   // **`mark`**`: ?string`
-  //   : This token also comes in `_open` and `_close` variants, but
-  //     should add a mark (named by the value) to its content, rather
-  //     than wrapping it in a node.
+  //   : This token (again, unless `noCloseToken` is true) also comes
+  //     in `_open` and `_close` variants, but should add a mark
+  //     (named by the value) to its content, rather than wrapping it
+  //     in a node.
   //
   // **`attrs`**`: ?Object`
   //   : Attributes for the node or mark. When `getAttrs` is provided,
