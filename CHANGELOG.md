@@ -1,3 +1,9 @@
+## 1.5.1 (2021-01-06)
+
+### Bug fixes
+
+The Markdown parser will now correctly set the `tight` attribute on list nodes.
+
 ## 1.5.0 (2020-07-17)
 
 ### New features
