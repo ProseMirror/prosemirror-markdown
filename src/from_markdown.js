@@ -53,7 +53,7 @@ class MarkdownParseState {
       let handler = this.tokenHandlers[tok.type]
       if (!handler)
         throw new Error("Token type `" + tok.type + "` not supported by Markdown parser")
-      handler(this, tok)
+      handler(this, tok, toks, i)
     }
   }
 
@@ -81,8 +81,8 @@ class MarkdownParseState {
   }
 }
 
-function attrs(spec, token) {
-  if (spec.getAttrs) return spec.getAttrs(token)
+function attrs(spec, token, tokens, i) {
+  if (spec.getAttrs) return spec.getAttrs(token, tokens, i)
   // For backwards compatibility when `attrs` is a Function
   else if (spec.attrs instanceof Function) return spec.attrs(token)
   else return spec.attrs
@@ -107,28 +107,28 @@ function tokenHandlers(schema, tokens) {
     if (spec.block) {
       let nodeType = schema.nodeType(spec.block)
       if (noCloseToken(spec, type)) {
-        handlers[type] = (state, tok) => {
-          state.openNode(nodeType, attrs(spec, tok))
+        handlers[type] = (state, tok, tokens, i) => {
+          state.openNode(nodeType, attrs(spec, tok, tokens, i))
           state.addText(withoutTrailingNewline(tok.content))
           state.closeNode()
         }
       } else {
-        handlers[type + "_open"] = (state, tok) => state.openNode(nodeType, attrs(spec, tok))
+        handlers[type + "_open"] = (state, tok, tokens, i) => state.openNode(nodeType, attrs(spec, tok, tokens, i))
         handlers[type + "_close"] = state => state.closeNode()
       }
     } else if (spec.node) {
       let nodeType = schema.nodeType(spec.node)
-      handlers[type] = (state, tok) => state.addNode(nodeType, attrs(spec, tok))
+      handlers[type] = (state, tok, tokens, i) => state.addNode(nodeType, attrs(spec, tok, tokens, i))
     } else if (spec.mark) {
       let markType = schema.marks[spec.mark]
       if (noCloseToken(spec, type)) {
-        handlers[type] = (state, tok) => {
-          state.openMark(markType.create(attrs(spec, tok)))
+        handlers[type] = (state, tok, tokens, i) => {
+          state.openMark(markType.create(attrs(spec, tok, tokens, i)))
           state.addText(withoutTrailingNewline(tok.content))
           state.closeMark(markType)
         }
       } else {
-        handlers[type + "_open"] = (state, tok) => state.openMark(markType.create(attrs(spec, tok)))
+        handlers[type + "_open"] = (state, tok, tokens, i) => state.openMark(markType.create(attrs(spec, tok, tokens, i)))
         handlers[type + "_close"] = state => state.closeMark(markType)
       }
     } else if (spec.ignore) {
@@ -222,6 +222,12 @@ export class MarkdownParser {
   }
 }
 
+function listIsTight(tokens, i) {
+  while (++i < tokens.length)
+    if (tokens[i].type != "list_item_open") return tokens[i].hidden
+  return false
+}
+
 // :: MarkdownParser
 // A parser parsing unextended [CommonMark](http://commonmark.org/),
 // without inline HTML, and producing a document in the basic schema.
@@ -229,8 +235,11 @@ export const defaultMarkdownParser = new MarkdownParser(schema, markdownit("comm
   blockquote: {block: "blockquote"},
   paragraph: {block: "paragraph"},
   list_item: {block: "list_item"},
-  bullet_list: {block: "bullet_list"},
-  ordered_list: {block: "ordered_list", getAttrs: tok => ({order: +tok.attrGet("start") || 1})},
+  bullet_list: {block: "bullet_list", getAttrs: (_, tokens, i) => ({tight: listIsTight(tokens, i)})},
+  ordered_list: {block: "ordered_list", getAttrs: (tok, tokens, i) => ({
+    order: +tok.attrGet("start") || 1,
+    tight: listIsTight(tokens, i)
+  })},
   heading: {block: "heading", getAttrs: tok => ({level: +tok.tag.slice(1)})},
   code_block: {block: "code_block", noCloseToken: true},
   fence: {block: "code_block", getAttrs: tok => ({params: tok.info || ""}), noCloseToken: true},

@@ -133,9 +133,14 @@ describe("markdown", () => {
      serialize(doc(p("Text with", em(" "), "an emphasized space")),
                "Text with an emphasized space"))
 
+  it("preserves list tightness", () => {
+    same("* foo\n* bar", doc(ul({tight: true}, li(p("foo")), li(p("bar")))))
+    same("1. foo\n2. bar", doc(ol({tight: true}, li(p("foo")), li(p("bar")))))
+  })
+
   it("doesn't put a code block after a list item inside the list item", () =>
      same("* list item\n\n```\ncode\n```",
-          doc(ul(li(p("list item"))), pre("code"))))
+          doc(ul({tight: true}, li(p("list item"))), pre("code"))))
 
   it("doesn't escape characters in code", () =>
      same("foo`*`", doc(p("foo", code("*")))))
