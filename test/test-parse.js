@@ -144,4 +144,12 @@ describe("markdown", () => {
 
   it("doesn't escape characters in code", () =>
      same("foo`*`", doc(p("foo", code("*")))))
+
+  it("doesn't escape hashtag if it is not followed by whitespace", () =>
+    serialize(doc(p("#tag")), "#tag")
+  )
+
+  it("escape hashtag if it is followed by whitespace", () =>
+    serialize(doc(p("# tag")), "\\# tag")
+  )
 })

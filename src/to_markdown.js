@@ -365,7 +365,7 @@ export class MarkdownSerializerState {
   // have special meaning only at the start of the line.
   esc(str, startOfLine) {
     str = str.replace(/[`*\\~\[\]]/g, "\\$&")
-    if (startOfLine) str = str.replace(/^[:#\-*+]/, "\\$&").replace(/^(\s*\d+)\./, "$1\\.")
+    if (startOfLine) str = str.replace(/^[:\-*+]|#\s/, "\\$&").replace(/^(\s*\d+)\./, "$1\\.")
     return str
   }
 
