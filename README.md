@@ -68,7 +68,7 @@ the tokens to create a ProseMirror document tree.
      : Attributes for the node or mark. When `getAttrs` is provided,
        it takes precedence.
 
-   **`getAttrs`**`: ?(MarkdownToken) → Object`
+   **`getAttrs`**`: ?(MarkdownToken, tokens: Object, i: number) → Object`
      : A function used to compute the attributes for the node or mark
        that takes a [markdown-it
        token](https://markdown-it.github.io/markdown-it/#Token) and
