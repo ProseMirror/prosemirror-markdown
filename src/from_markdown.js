@@ -186,10 +186,11 @@ export class MarkdownParser {
   //   : Attributes for the node or mark. When `getAttrs` is provided,
   //     it takes precedence.
   //
-  // **`getAttrs`**`: ?(MarkdownToken) → Object`
+  // **`getAttrs`**`: ?(MarkdownToken, Object, number) → Object`
   //   : A function used to compute the attributes for the node or mark
   //     that takes a [markdown-it
-  //     token](https://markdown-it.github.io/markdown-it/#Token) and
+  //     token](https://markdown-it.github.io/markdown-it/#Token),
+  //     the tokens object, and the current index of the token and
   //     returns an attribute object.
   //
   // **`noCloseToken`**`: ?boolean`
