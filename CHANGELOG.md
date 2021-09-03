@@ -1,3 +1,9 @@
+## 1.5.2 (2021-09-03)
+
+### Bug fixes
+
+Serializing to Markdown now properly escapes '>' characters at the start of the line.
+
 ## 1.5.1 (2021-01-06)
 
 ### Bug fixes
