@@ -135,8 +135,8 @@ function tokenHandlers(schema, tokens) {
       if (noCloseToken(spec, type)) {
         handlers[type] = noOp
       } else {
-        handlers[type + '_open'] = noOp
-        handlers[type + '_close'] = noOp
+        handlers[type + "_open"] = noOp
+        handlers[type + "_close"] = noOp
       }
     } else {
       throw new RangeError("Unrecognized parsing spec " + JSON.stringify(spec))
@@ -219,7 +219,7 @@ export class MarkdownParser {
     let state = new MarkdownParseState(this.schema, this.tokenHandlers), doc
     state.parseTokens(this.tokenizer.parse(text, {}))
     do { doc = state.closeNode() } while (state.stack.length)
-    return doc
+    return doc || this.schema.topNodeType.createAndFill()
   }
 }
 
