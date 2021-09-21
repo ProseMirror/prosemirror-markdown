@@ -1,3 +1,9 @@
+## 1.6.0 (2021-09-21)
+
+### New features
+
+`MarkdownParser.tokenizer` is now public, for easier creation of parsers that base on other parsers.
+
 ## 1.5.2 (2021-09-03)
 
 ### Bug fixes
