@@ -206,6 +206,7 @@ export class MarkdownParser {
     // parsers on.
     this.tokens = tokens
     this.schema = schema
+    // :: This parser's markdown-it tokenizer.
     this.tokenizer = tokenizer
     this.tokenHandlers = tokenHandlers(schema, tokens)
   }
