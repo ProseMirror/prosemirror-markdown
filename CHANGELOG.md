@@ -1,3 +1,11 @@
+## 1.6.1 (2021-12-16)
+
+### Bug fixes
+
+Fix a bug where `MarkdownParser.parse` could return null when the parsed content doesn't fit the schema.
+
+Make sure underscores are escaped when serializing to Markdown.
+
 ## 1.6.0 (2021-09-21)
 
 ### New features
