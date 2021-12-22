@@ -147,11 +147,27 @@ function isPlainURL(link, parent, index, side) {
 // methods related to markdown serialization. Instances are passed to
 // node and mark serialization methods (see `toMarkdown`).
 export class MarkdownSerializerState {
+  // :: (Object<(state: MarkdownSerializerState, node: Node, parent: Node, index: number)>, Object, Object?)
+  // Construct a serializerstate object with the given configuration. 
+  // The `nodes` object should map node names in a given schema to
+  // function that take a serializer state and such a node, and serialize
+  // the node.
+  //
+  // The `marks` object should hold objects with `open` and `close`
+  // properties, which hold the strings that should appear before and
+  // after a piece of text marked that way, either directly or as a
+  // function that takes a serializer state and a mark, and returns a
+  // string. 
   constructor(nodes, marks, options) {
+    // :: Object The node serializer info.
     this.nodes = nodes
+    // :: Object The mark serializer info.
     this.marks = marks
+    // :: string
     this.delim = this.out = ""
+    // :: boolean
     this.closed = false
+    // :: boolean
     this.inTightList = false
     // :: Object
     // The options passed to the serializer.
@@ -164,6 +180,7 @@ export class MarkdownSerializerState {
       this.options.tightLists = false
   }
 
+  // :: (number)
   flushClose(size) {
     if (this.closed) {
       if (!this.atBlank()) this.out += "\n"
@@ -193,6 +210,7 @@ export class MarkdownSerializerState {
     this.closeBlock(node)
   }
 
+  // :: () → boolean
   atBlank() {
     return /(^|\n)$/.test(this.out)
   }
@@ -233,7 +251,7 @@ export class MarkdownSerializerState {
     }
   }
 
-  // :: (Node)
+  // :: (Node, Node?, number?)
   // Render the given node as a block.
   render(node, parent, index) {
     if (typeof parent == "number") throw new Error("!")
