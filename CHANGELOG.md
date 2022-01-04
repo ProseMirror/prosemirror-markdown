@@ -1,3 +1,9 @@
+## 1.6.2 (2022-01-04)
+
+### Bug fixes
+
+Fix a bug where URL text in links and images was overzealously escaped.
+
 ## 1.6.1 (2021-12-16)
 
 ### Bug fixes
