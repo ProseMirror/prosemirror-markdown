@@ -95,8 +95,8 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
   },
 
   image(state, node) {
-    state.write("![" + state.esc(node.attrs.alt || "") + "](" + state.esc(node.attrs.src) +
-                (node.attrs.title ? " " + state.quote(node.attrs.title) : "") + ")")
+    state.write("![" + state.esc(node.attrs.alt || "") + "](" + node.attrs.src +
+                (node.attrs.title ? ' "' + node.attrs.title.replace(/"/g, '\\"') + '"' : "") + ")")
   },
   hard_break(state, node, parent, index) {
     for (let i = index + 1; i < parent.childCount; i++)
@@ -117,7 +117,7 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
     },
     close(state, mark, parent, index) {
       return isPlainURL(mark, parent, index, -1) ? ">"
-        : "](" + state.esc(mark.attrs.href) + (mark.attrs.title ? " " + state.quote(mark.attrs.title) : "") + ")"
+        : "](" + mark.attrs.href + (mark.attrs.title ? ' "' + mark.attrs.title.replace(/"/g, '\\"') + '"' : "") + ")"
     }
   },
   code: {open(_state, _mark, parent, index) { return backticksFor(parent.child(index), -1) },

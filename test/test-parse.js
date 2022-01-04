@@ -95,6 +95,16 @@ describe("markdown", () => {
          doc(p(link({href: "foo.html"}, "foo.html"))))
   })
 
+  it("can handle link titles", () => {
+    same('[a](x.html "title \\"quoted\\"")',
+         doc(p(link({href: "x.html", title: 'title "quoted"'}, "a"))))
+  })
+
+  it("doesn't escape underscores in link", () => {
+    same('[link](http://foo.com/a_b_c)',
+         doc(p(link({href: "http://foo.com/a_b_c"}, "link"))))
+  })
+
   it("parses emphasized urls", () =>
      same("Link to *<https://prosemirror.net>*",
           doc(p("Link to ", em(link({href: "https://prosemirror.net"}, "https://prosemirror.net"))))))
