@@ -1,3 +1,9 @@
+## 1.7.0 (2022-01-06)
+
+### New features
+
+Upgrade markdown-it to version 12.
+
 ## 1.6.2 (2022-01-04)
 
 ### Bug fixes
