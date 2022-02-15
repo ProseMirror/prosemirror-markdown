@@ -154,4 +154,18 @@ describe("markdown", () => {
 
   it("doesn't escape characters in code", () =>
      same("foo`*`", doc(p("foo", code("*")))))
+
+  it("doesn't escape underscores in raw links", () =>
+     same(
+       "https://example.com/something/abc_def",
+       doc(p("https://example.com/something/abc_def"))
+     )
+   )
+ 
+   it("properly escapes underscores between links", () =>
+     same(
+       "https://example.com/something/abc_def \\_escaped\\_ https://example.com/something/cba_",
+       doc(p("https://example.com/something/abc_def _escaped_ https://example.com/something/cba_")),
+     )
+   )
 })

@@ -364,7 +364,31 @@ export class MarkdownSerializerState {
   // content. If `startOfLine` is true, also escape characters that
   // have special meaning only at the start of the line.
   esc(str, startOfLine) {
-    str = str.replace(/[`*\\~\[\]_]/g, "\\$&")
+    let urlPattern, urlStart = 0, urlEnd = 0;
+    str = str.replace(/[`*\\~\[\]_]/g, (match, offset) => {
+      //avoid escaping underscores in urls
+      if (match == "_") {
+        //scan for urls and check if the occurence is within or without the matched url.        
+        if (!urlPattern)
+          urlPattern = /\b(?:\w+):\/\/[a-z0-9-+&@#\/\\%?=~_|!:,.;]*[a-z0-9-+&@#\/%=~_|]/ig;
+        while (urlEnd >= 0) {
+          if (offset < urlStart)
+            return "\\" + match
+          if (offset < urlEnd)
+            return match;
+          let result = urlPattern.exec(str)
+          if (result) {
+            urlStart = result.index
+            urlEnd = urlStart + result[0].length
+          }
+          else {
+            urlEnd = -1
+            break;
+          }
+        }
+      }
+      return "\\" + match
+    })
     if (startOfLine) str = str.replace(/^[:#\-*+>]/, "\\$&").replace(/^(\s*\d+)\./, "$1\\.")
     return str
   }
