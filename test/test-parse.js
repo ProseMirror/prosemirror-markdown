@@ -154,4 +154,32 @@ describe("markdown", () => {
 
   it("doesn't escape characters in code", () =>
      same("foo`*`", doc(p("foo", code("*")))))
+
+  it("doesn't escape underscores between word characters", () =>
+     same(
+       "abc_def",
+       doc(p("abc_def"))
+     )
+   )
+
+   it("doesn't escape strips of underscores between word characters", () =>
+     same(
+       "abc___def",
+       doc(p("abc___def"))
+     )
+   )
+
+   it("escapes underscores at word boundaries", () =>
+     same(
+       "\\_abc\\_",
+       doc(p("_abc_"))
+     )
+   )
+
+   it("escapes underscores surrounded by non-word characters", () =>
+     same(
+       "/\\_abc\\_)",
+       doc(p("/_abc_)"))
+     )
+   )
 })
