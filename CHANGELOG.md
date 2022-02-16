@@ -1,3 +1,9 @@
+## 1.7.1 (2022-02-16)
+
+### Bug fixes
+
+Avoid escaping underscores surrounded by word characters.
+
 ## 1.7.0 (2022-01-06)
 
 ### New features
