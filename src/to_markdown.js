@@ -159,6 +159,11 @@ export class MarkdownSerializerState {
     //   Whether to render lists in a tight style. This can be overridden
     //   on a node level by specifying a tight attribute on the node.
     //   Defaults to false.
+    //
+    //   escCustomRegexp:: ?RegExp
+    //   Custom RegExp object is used for escaping text.
+    //   The regexp object is passed directly to String.replace(),
+    //   and the matching character is preceded by a backslash.
     this.options = options || {}
     if (typeof this.options.tightLists == "undefined")
       this.options.tightLists = false
@@ -369,6 +374,7 @@ export class MarkdownSerializerState {
       (m, i) => m == "_" && i > 0 && i + 1 < str.length && str[i-1].match(/\w/) && str[i+1].match(/\w/) ?  m : "\\" + m
     )
     if (startOfLine) str = str.replace(/^[:#\-*+>]/, "\\$&").replace(/^(\s*\d+)\./, "$1\\.")
+    if (this.options.escCustomRegexp) str = str.replace(this.options.escCustomRegexp, "\\$&")
     return str
   }
 

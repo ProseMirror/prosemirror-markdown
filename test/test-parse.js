@@ -9,13 +9,13 @@ function parse(text, doc) {
   ist(defaultMarkdownParser.parse(text), doc, eq)
 }
 
-function serialize(doc, text) {
-  ist(defaultMarkdownSerializer.serialize(doc), text)
+function serialize(doc, text, options = {}) {
+  ist(defaultMarkdownSerializer.serialize(doc, options), text)
 }
 
-function same(text, doc) {
+function same(text, doc, options = {}) {
   parse(text, doc)
-  serialize(doc, text)
+  serialize(doc, text, options)
 }
 
 describe("markdown", () => {
@@ -182,4 +182,8 @@ describe("markdown", () => {
        doc(p("/_abc_)"))
      )
    )
+
+  it("escapes extra characters from options", () => {
+    same("foo\\|bar\\!", doc(p("foo|bar!")), { escCustomRegexp: /[\|!]/g })
+  })
 })
