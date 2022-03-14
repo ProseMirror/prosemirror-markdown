@@ -184,6 +184,6 @@ describe("markdown", () => {
    )
 
   it("escapes extra characters from options", () => {
-    same("foo\\|bar\\!", doc(p("foo|bar!")), { escCustomRegexp: /[\|!]/g })
+    same("foo\\|bar\\!", doc(p("foo|bar!")), { escapeExtraCharacters: /[\|!]/g })
   })
 })
