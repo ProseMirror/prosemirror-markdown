@@ -1,7 +1,7 @@
 const {eq} = require("prosemirror-test-builder")
 const ist = require("ist")
 
-const {schema, defaultMarkdownParser, defaultMarkdownSerializer} = require("..")
+const {schema, defaultMarkdownParser, defaultMarkdownSerializer, MarkdownSerializer} = require("..")
 
 const {doc, blockquote, h1, h2, p, hr, li, ol, ol3, ul, pre, em, strong, code, a, link, br, img} = require("./build")
 
@@ -182,4 +182,18 @@ describe("markdown", () => {
        doc(p("/_abc_)"))
      )
    )
+
+  context("custom serializer", () => {
+   let markdownSerializer = new MarkdownSerializer(
+     defaultMarkdownSerializer.nodes,
+     defaultMarkdownSerializer.marks,
+     {
+       escapeExtraCharacters: /[\|!]/g,
+     }
+   );
+
+   it("escapes extra characters from options", () => {
+     ist(markdownSerializer.serialize(doc(p("foo|bar!"))), "foo\\|bar\\!");
+   });
+ });
 })
