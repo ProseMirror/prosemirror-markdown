@@ -1,7 +1,7 @@
 // ::- A specification for serializing a ProseMirror document as
 // Markdown/CommonMark text.
 export class MarkdownSerializer {
-  // :: (Object<(state: MarkdownSerializerState, node: Node, parent: Node, index: number)>, Object)
+  // :: (Object<(state: MarkdownSerializerState, node: Node, parent: Node, index: number)>, Object, ?Object)
   // Construct a serializer with the given configuration. The `nodes`
   // object should map node names in a given schema to function that
   // take a serializer state and such a node, and serialize the node.
@@ -34,18 +34,18 @@ export class MarkdownSerializer {
   // outside the marks. This is necessary for emphasis marks as
   // CommonMark does not permit enclosing whitespace inside emphasis
   // marks, see: http://spec.commonmark.org/0.26/#example-330
+  //
+  //   options::- Optional additional options.
+  //     escapeExtraCharacters:: ?RegExp
+  //     Extra characters can be added for escaping. This is passed
+  //     directly to String.replace(), and the matching characters are
+  //     preceded by a backslash.
   constructor(nodes, marks, options) {
     // :: Object<(MarkdownSerializerState, Node)> The node serializer
     // functions for this serializer.
     this.nodes = nodes
     // :: Object The mark serializer info.
     this.marks = marks
-    // :: Object
-    // The options passed to the serializer.
-    //   escapeExtraCharacters:: ?RegExp
-    //   Extra characters can be added for escaping.
-    //   This is passed directly to String.replace(),
-    //   and the matching character is preceded by a backslash.
     this.options = options || {}
   }
 

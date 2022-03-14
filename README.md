@@ -1,8 +1,8 @@
 # prosemirror-markdown
 
-[ [**WEBSITE**](https://prosemirror.net) | [**ISSUES**](https://github.com/prosemirror/prosemirror-markdown/issues) | [**FORUM**](https://discuss.prosemirror.net) | [**GITTER**](https://gitter.im/ProseMirror/prosemirror) ]
+[ [**WEBSITE**](http://prosemirror.net) | [**ISSUES**](https://github.com/prosemirror/prosemirror-markdown/issues) | [**FORUM**](https://discuss.prosemirror.net) | [**GITTER**](https://gitter.im/ProseMirror/prosemirror) ]
 
-This is a (non-core) module for [ProseMirror](https://prosemirror.net).
+This is a (non-core) module for [ProseMirror](http://prosemirror.net).
 ProseMirror is a well-behaved rich semantic content editor based on
 contentEditable, with support for collaborative editing and custom
 document schemas.
@@ -52,17 +52,18 @@ the tokens to create a ProseMirror document tree.
        `block`, or `mark` must be set.
 
    **`block`**`: ?string`
-     : This token comes in `_open` and `_close` variants (which are
-       appended to the base token name provides a the object
-       property), and wraps a block of content. The block should be
-       wrapped in a node of the type named to by the property's
-       value. If the token does not have `_open` or `_close`, use
-       the `noCloseToken` option.
+     : This token (unless `noCloseToken` is true) comes in `_open`
+       and `_close` variants (which are appended to the base token
+       name provides a the object property), and wraps a block of
+       content. The block should be wrapped in a node of the type
+       named to by the property's value. If the token does not have
+       `_open` or `_close`, use the `noCloseToken` option.
 
    **`mark`**`: ?string`
-     : This token also comes in `_open` and `_close` variants, but
-       should add a mark (named by the value) to its content, rather
-       than wrapping it in a node.
+     : This token (again, unless `noCloseToken` is true) also comes
+       in `_open` and `_close` variants, but should add a mark
+       (named by the value) to its content, rather than wrapping it
+       in a node.
 
    **`attrs`**`: ?Object`
      : Attributes for the node or mark. When `getAttrs` is provided,
@@ -88,6 +89,9 @@ the tokens to create a ProseMirror document tree.
    this parser. Can be useful to copy and modify to base other
    parsers on.
 
+ * **`tokenizer`**`: This`\
+   parser's markdown-it tokenizer.
+
  * **`parse`**`(text: string) → Node`\
    Parse a string as [CommonMark](http://commonmark.org/) markup,
    and create a ProseMirror document as prescribed by this parser's
@@ -104,8 +108,7 @@ the tokens to create a ProseMirror document tree.
 A specification for serializing a ProseMirror document as
 Markdown/CommonMark text.
 
- * `new `**`MarkdownSerializer`**`(nodes: Object< fn(state: MarkdownSerializerState, node: Node, parent: Node, index: number) >, marks: Object)`
-
+ * `new `**`MarkdownSerializer`**`(nodes: Object< fn(state: MarkdownSerializerState, node: Node, parent: Node, index: number) >, marks: Object, options: ?Object)`\
    Construct a serializer with the given configuration. The `nodes`
    object should map node names in a given schema to function that
    take a serializer state and such a node, and serialize the node.
@@ -114,7 +117,14 @@ Markdown/CommonMark text.
    properties, which hold the strings that should appear before and
    after a piece of text marked that way, either directly or as a
    function that takes a serializer state and a mark, and returns a
-   string.
+   string. `open` and `close` can also be functions, which will be
+   called as
+
+       (state: MarkdownSerializerState, mark: Mark,
+        parent: Fragment, index: number) → string
+
+   Where `parent` and `index` allow you to inspect the mark's
+   context to see which nodes it applies to.
 
    Mark information objects can also have a `mixable` property
    which, when `true`, indicates that the order in which the mark's
@@ -131,6 +141,14 @@ Markdown/CommonMark text.
    outside the marks. This is necessary for emphasis marks as
    CommonMark does not permit enclosing whitespace inside emphasis
    marks, see: http://spec.commonmark.org/0.26/#example-330
+
+    * **`options`**`: ?Object`\
+      Optional additional options.
+
+       * **`escapeExtraCharacters`**`: ?RegExp`\
+         Extra characters can be added for escaping. This is passed
+         directly to String.replace(), and the matching characters are
+         preceded by a backslash.
 
  * **`nodes`**`: Object< fn(MarkdownSerializerState, Node) >`\
    The node serializer
@@ -197,7 +215,7 @@ node and mark serialization methods (see `toMarkdown`).
  * **`esc`**`(str: string, startOfLine: ?bool) → string`\
    Escape the given string so that it can safely appear in Markdown
    content. If `startOfLine` is true, also escape characters that
-   has special meaning only at the start of the line.
+   have special meaning only at the start of the line.
 
  * **`repeat`**`(str: string, n: number) → string`\
    Repeat the given string `n` times.
