@@ -1,3 +1,9 @@
+## 1.8.0 (2022-03-14)
+
+### New features
+
+`MarkdownSerializer` now takes an `escapeExtraCharacters` option that can be used to control backslash-escaping behavior. Fix types for new option
+
 ## 1.7.1 (2022-02-16)
 
 ### Bug fixes
