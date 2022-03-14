@@ -1,7 +1,7 @@
 const {eq} = require("prosemirror-test-builder")
 const ist = require("ist")
 
-const {schema, defaultMarkdownParser, defaultMarkdownSerializer} = require("..")
+const {schema, defaultMarkdownParser, defaultMarkdownSerializer, MarkdownSerializer} = require("..")
 
 const {doc, blockquote, h1, h2, p, hr, li, ol, ol3, ul, pre, em, strong, code, a, link, br, img} = require("./build")
 
@@ -9,13 +9,13 @@ function parse(text, doc) {
   ist(defaultMarkdownParser.parse(text), doc, eq)
 }
 
-function serialize(doc, text, options = {}) {
-  ist(defaultMarkdownSerializer.serialize(doc, options), text)
+function serialize(doc, text) {
+  ist(defaultMarkdownSerializer.serialize(doc), text)
 }
 
-function same(text, doc, options = {}) {
+function same(text, doc) {
   parse(text, doc)
-  serialize(doc, text, options)
+  serialize(doc, text)
 }
 
 describe("markdown", () => {
@@ -183,7 +183,17 @@ describe("markdown", () => {
      )
    )
 
-  it("escapes extra characters from options", () => {
-    same("foo\\|bar\\!", doc(p("foo|bar!")), { escapeExtraCharacters: /[\|!]/g })
-  })
+  context("custom serializer", () => {
+   let markdownSerializer = new MarkdownSerializer(
+     defaultMarkdownSerializer.nodes,
+     defaultMarkdownSerializer.marks,
+     {
+       escapeExtraCharacters: /[\|!]/g,
+     }
+   );
+
+   it("escapes extra characters from options", () => {
+     ist(markdownSerializer.serialize(doc(p("foo|bar!"))), "foo\\|bar\\!");
+   });
+ });
 })

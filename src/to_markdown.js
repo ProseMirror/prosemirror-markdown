@@ -34,18 +34,26 @@ export class MarkdownSerializer {
   // outside the marks. This is necessary for emphasis marks as
   // CommonMark does not permit enclosing whitespace inside emphasis
   // marks, see: http://spec.commonmark.org/0.26/#example-330
-  constructor(nodes, marks) {
+  constructor(nodes, marks, options) {
     // :: Object<(MarkdownSerializerState, Node)> The node serializer
     // functions for this serializer.
     this.nodes = nodes
     // :: Object The mark serializer info.
     this.marks = marks
+    // :: Object
+    // The options passed to the serializer.
+    //   escapeExtraCharacters:: ?RegExp
+    //   Extra characters can be added for escaping.
+    //   This is passed directly to String.replace(),
+    //   and the matching character is preceded by a backslash.
+    this.options = options || {}
   }
 
   // :: (Node, ?Object) → string
   // Serialize the content of the given node to
   // [CommonMark](http://commonmark.org/).
   serialize(content, options) {
+    options = Object.assign(this.options, options)
     let state = new MarkdownSerializerState(this.nodes, this.marks, options)
     state.renderContent(content)
     return state.out
@@ -159,10 +167,6 @@ export class MarkdownSerializerState {
     //   Whether to render lists in a tight style. This can be overridden
     //   on a node level by specifying a tight attribute on the node.
     //   Defaults to false.
-    //
-    //   escapeExtraCharacters:: ?RegExp
-    //   The regexp object is passed directly to String.replace(),
-    //   and the matching character is preceded by a backslash.
     this.options = options || {}
     if (typeof this.options.tightLists == "undefined")
       this.options.tightLists = false
