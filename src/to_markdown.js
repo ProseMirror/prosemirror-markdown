@@ -123,7 +123,7 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
     open(_state, mark, parent, index) {
       return isPlainURL(mark, parent, index, 1) ? "<" : "["
     },
-    close(state, mark, parent, index) {
+    close(_state, mark, parent, index) {
       return isPlainURL(mark, parent, index, -1) ? ">"
         : "](" + mark.attrs.href + (mark.attrs.title ? ' "' + mark.attrs.title.replace(/"/g, '\\"') + '"' : "") + ")"
     }
@@ -373,7 +373,7 @@ export class MarkdownSerializerState {
   // have special meaning only at the start of the line.
   esc(str, startOfLine) {
     str = str.replace(
-      /[`*\\~\[\]_]/g, 
+      /[`*\\~\[\]_]/g,
       (m, i) => m == "_" && i > 0 && i + 1 < str.length && str[i-1].match(/\w/) && str[i+1].match(/\w/) ?  m : "\\" + m
     )
     if (startOfLine) str = str.replace(/^[:#\-*+>]/, "\\$&").replace(/^(\s*\d+)\./, "$1\\.")
