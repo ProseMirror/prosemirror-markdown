@@ -183,17 +183,10 @@ describe("markdown", () => {
      )
    )
 
-  context("custom serializer", () => {
-   let markdownSerializer = new MarkdownSerializer(
-     defaultMarkdownSerializer.nodes,
-     defaultMarkdownSerializer.marks,
-     {
-       escapeExtraCharacters: /[\|!]/g,
-     }
-   );
-
-   it("escapes extra characters from options", () => {
-     ist(markdownSerializer.serialize(doc(p("foo|bar!"))), "foo\\|bar\\!");
-   });
- });
+  it("escapes extra characters from options", () => {
+    let markdownSerializer = new MarkdownSerializer(defaultMarkdownSerializer.nodes,
+                                                    defaultMarkdownSerializer.marks,
+                                                    {escapeExtraCharacters: /[\|!]/g})
+    ist(markdownSerializer.serialize(doc(p("foo|bar!"))), "foo\\|bar\\!")
+ })
 })
