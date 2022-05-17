@@ -1,19 +1,20 @@
-const {eq} = require("prosemirror-test-builder")
-const ist = require("ist")
+import {eq} from "prosemirror-test-builder"
+import {Node} from "prosemirror-model"
+import ist from "ist"
 
-const {schema, defaultMarkdownParser, defaultMarkdownSerializer, MarkdownSerializer} = require("..")
+import {schema, defaultMarkdownParser, defaultMarkdownSerializer, MarkdownSerializer} from "prosemirror-markdown"
 
-const {doc, blockquote, h1, h2, p, hr, li, ol, ol3, ul, pre, em, strong, code, a, link, br, img} = require("./build")
+import {doc, blockquote, h1, h2, p, hr, li, ol, ol3, ul, pre, em, strong, code, a, link, br, img} from "./build.js"
 
-function parse(text, doc) {
+function parse(text: string, doc: Node) {
   ist(defaultMarkdownParser.parse(text), doc, eq)
 }
 
-function serialize(doc, text) {
+function serialize(doc: Node, text: string) {
   ist(defaultMarkdownSerializer.serialize(doc), text)
 }
 
-function same(text, doc) {
+function same(text: string, doc: Node) {
   parse(text, doc)
   serialize(doc, text)
 }
@@ -111,15 +112,15 @@ describe("markdown", () => {
 
   it("parses an image", () =>
      same("Here's an image: ![x](img.png)",
-          doc(p("Here's an image: ", img))))
+          doc(p("Here's an image: ", img()))))
 
   it("parses a line break", () =>
      same("line one\\\nline two",
-          doc(p("line one", br, "line two"))))
+          doc(p("line one", br(), "line two"))))
 
   it("parses a horizontal rule", () =>
      same("one two\n\n---\n\nthree",
-          doc(p("one two"), hr, p("three"))))
+          doc(p("one two"), hr(), p("three"))))
 
   it("ignores HTML tags", () =>
      same("Foo < img> bar",
@@ -133,7 +134,7 @@ describe("markdown", () => {
      same("**text1\ntext2**", doc(p(strong("text1\ntext2")))))
 
   it("drops trailing hard breaks", () =>
-     serialize(doc(p("a", br, br)), "a"))
+     serialize(doc(p("a", br(), br())), "a"))
 
   it("expels enclosing whitespace from inside emphasis", () =>
      serialize(doc(p("Some emphasized text with", strong(em("  whitespace   ")), "surrounding the emphasis.")),

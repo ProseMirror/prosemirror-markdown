@@ -1,10 +1,11 @@
-const {eq} = require("prosemirror-test-builder")
-const ist = require("ist")
+import {eq} from "prosemirror-test-builder"
+import ist from "ist"
+// @ts-ignore
+import markdownit from "markdown-it"
+import {Node} from "prosemirror-model"
+import {schema, MarkdownParser} from "prosemirror-markdown"
 
-const markdownit = require("markdown-it")
-const {schema, MarkdownParser} = require("..")
-
-const {doc, p, hard_break} = require("./build")
+import {doc, p, br} from "./build.js"
 
 const md = markdownit("commonmark", {html: false})
 const ignoreBlockquoteParser = new MarkdownParser(schema, md, {
@@ -13,8 +14,8 @@ const ignoreBlockquoteParser = new MarkdownParser(schema, md, {
   softbreak: {node: 'hard_break'}
 })
 
-function parseWith(parser) {
-  return (text, doc) => {
+function parseWith(parser: MarkdownParser) {
+  return (text: string, doc: Node) => {
     ist(parser.parse(text), doc, eq)
   }
 }
@@ -26,5 +27,5 @@ describe("custom markdown parser", () => {
 
   it("converts softbreaks to hard_break nodes", () =>
     parseWith(ignoreBlockquoteParser)("hello\nworld!",
-         doc(p("hello", hard_break(), 'world!'))))
+         doc(p("hello", br(), 'world!'))))
 })

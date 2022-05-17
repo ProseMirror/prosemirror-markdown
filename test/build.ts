@@ -16,14 +16,21 @@ const b = builders(schema, {
   img: {nodeType: "image", src: "img.png", alt: "x"}
 }) as any
 
+export const doc: NodeBuilder = b.doc
 export const p: NodeBuilder = b.p
-export const h1: NodeBuilder = b.h2
+export const h1: NodeBuilder = b.h1
+export const h2: NodeBuilder = b.h2
 export const hr: NodeBuilder = b.hr
 export const li: NodeBuilder = b.li
 export const ol: NodeBuilder = b.ol
 export const ol3: NodeBuilder = b.ol3
 export const ul: NodeBuilder = b.ul
 export const pre: NodeBuilder = b.pre
-export const a: MarkBuilder = b.a
+export const blockquote: NodeBuilder = b.blockquote
 export const br: NodeBuilder = b.br
 export const img: NodeBuilder = b.img
+export const a: MarkBuilder = b.a
+export const link: MarkBuilder = b.link
+export const em: MarkBuilder = b.em
+export const strong: MarkBuilder = b.strong
+export const code: MarkBuilder = b.code
