@@ -168,7 +168,7 @@ export class MarkdownSerializerState {
     readonly nodes: {[node: string]: (state: MarkdownSerializerState, node: Node, parent: Node, index: number) => void},
     /// @internal
     readonly marks: {[mark: string]: MarkSerializerSpec},
-    // The options passed to the serializer.
+    /// The options passed to the serializer.
     readonly options: {tightLists?: boolean, escapeExtraCharacters?: RegExp}
   ) {
     if (typeof this.options.tightLists == "undefined")
@@ -399,7 +399,7 @@ export class MarkdownSerializerState {
   /// Get leading and trailing whitespace from a string. Values of
   /// leading or trailing property of the return object will be undefined
   /// if there is no match.
-  getEnclosingWhitespace(text: string) {
+  getEnclosingWhitespace(text: string): {leading?: string, trailing?: string} {
     return {
       leading: (text.match(/^(\s+)/) || [undefined])[0],
       trailing: (text.match(/(\s+)$/) || [undefined])[0]
