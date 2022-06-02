@@ -1,3 +1,9 @@
+## 1.9.1 (2022-06-02)
+
+### Bug fixes
+
+Fix a bug where inline nodes with content would reset the marks in their parent node during Markdown parsing.
+
 ## 1.9.0 (2022-05-30)
 
 ### New features
