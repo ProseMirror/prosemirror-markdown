@@ -14,15 +14,13 @@ function maybeMerge(a: Node, b: Node): Node | undefined {
 
 // Object used to track the context of a running parse.
 class MarkdownParseState {
-  stack: {type: NodeType, attrs: Attrs | null, content: Node[]}[]
-  marks: readonly Mark[]
+  stack: {type: NodeType, attrs: Attrs | null, content: Node[], marks: readonly Mark[]}[]
 
   constructor(
     readonly schema: Schema,
     readonly tokenHandlers: {[token: string]: (stat: MarkdownParseState, token: Token, tokens: Token[], i: number) => void}
   ) {
-    this.stack = [{type: schema.topNodeType, attrs: null, content: []}]
-    this.marks = Mark.none
+    this.stack = [{type: schema.topNodeType, attrs: null, content: [], marks: Mark.none}]
   }
 
   top() {
@@ -37,20 +35,22 @@ class MarkdownParseState {
   // using the current marks as styling.
   addText(text: string) {
     if (!text) return
-    let nodes = this.top().content, last = nodes[nodes.length - 1]
-    let node = this.schema.text(text, this.marks), merged
+    let top = this.top(), nodes = top.content, last = nodes[nodes.length - 1]
+    let node = this.schema.text(text, top.marks), merged
     if (last && (merged = maybeMerge(last, node))) nodes[nodes.length - 1] = merged
     else nodes.push(node)
   }
 
   // Adds the given mark to the set of active marks.
   openMark(mark: Mark) {
-    this.marks = mark.addToSet(this.marks)
+    let top = this.top()
+    top.marks = mark.addToSet(top.marks)
   }
 
   // Removes the given mark from the set of active marks.
   closeMark(mark: MarkType) {
-    this.marks = mark.removeFromSet(this.marks)
+    let top = this.top()
+    top.marks = mark.removeFromSet(top.marks)
   }
 
   parseTokens(toks: Token[]) {
@@ -65,7 +65,8 @@ class MarkdownParseState {
 
   // Add a node at the current position.
   addNode(type: NodeType, attrs: Attrs | null, content?: readonly Node[]) {
-    let node = type.createAndFill(attrs, content, this.marks)
+    let top = this.top()
+    let node = type.createAndFill(attrs, content, top ? top.marks : [])
     if (!node) return null
     this.push(node)
     return node
@@ -73,12 +74,11 @@ class MarkdownParseState {
 
   // Wrap subsequent content in a node of the given type.
   openNode(type: NodeType, attrs: Attrs | null) {
-    this.stack.push({type: type, attrs: attrs, content: []})
+    this.stack.push({type: type, attrs: attrs, content: [], marks: Mark.none})
   }
 
   // Close and return the node that is currently on top of the stack.
   closeNode() {
-    if (this.marks.length) this.marks = Mark.none
     let info = this.stack.pop()!
     return this.addNode(info.type, info.attrs, info.content)
   }
