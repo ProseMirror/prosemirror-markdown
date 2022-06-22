@@ -184,6 +184,20 @@ describe("markdown", () => {
      )
    )
 
+  it("ensure no escapes in url", () =>
+    parse(
+      "[text](https://example.com/_file/#~anchor)",
+      doc(p(a({href: "https://example.com/_file/#~anchor"}, "text")))
+    )
+  )
+
+  it("ensure no escapes in autolinks", () =>
+    same(
+      "<https://example.com/_file/#~anchor>",
+      doc(p(a({href: "https://example.com/_file/#~anchor"}, "https://example.com/_file/#~anchor")))
+    )
+  )
+
   it("escapes extra characters from options", () => {
     let markdownSerializer = new MarkdownSerializer(defaultMarkdownSerializer.nodes,
                                                     defaultMarkdownSerializer.marks,
