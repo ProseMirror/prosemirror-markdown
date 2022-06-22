@@ -112,18 +112,21 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
       }
   },
   text(state, node) {
-    state.text(node.text!)
+    state.text(node.text!, !state.isAutolink)
   }
 }, {
   em: {open: "*", close: "*", mixable: true, expelEnclosingWhitespace: true},
   strong: {open: "**", close: "**", mixable: true, expelEnclosingWhitespace: true},
   link: {
     open(_state, mark, parent, index) {
-      return isPlainURL(mark, parent, index, 1) ? "<" : "["
+      _state.isAutolink = isPlainURL(mark, parent, index, 1)
+      return _state.isAutolink ? "<" : "["
     },
     close(_state, mark, parent, index) {
-      return isPlainURL(mark, parent, index, -1) ? ">"
+      const cont = _state.isAutolink ? ">"
         : "](" + mark.attrs.href + (mark.attrs.title ? ' "' + mark.attrs.title.replace(/"/g, '\\"') + '"' : "") + ")"
+      _state.isAutolink = undefined
+      return cont
     }
   },
   code: {open(_state, _mark, parent, index) { return backticksFor(parent.child(index), -1) },
@@ -159,6 +162,8 @@ export class MarkdownSerializerState {
   out: string = ""
   /// @internal
   closed: Node | null = null
+  /// @intermal
+  isAutolink?: boolean = undefined
   /// @internal
   inTightList: boolean = false
 
