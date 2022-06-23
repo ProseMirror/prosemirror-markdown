@@ -112,21 +112,21 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
       }
   },
   text(state, node) {
-    state.text(node.text!, !state.isAutolink)
+    state.text(node.text!, !state.inAutolink)
   }
 }, {
   em: {open: "*", close: "*", mixable: true, expelEnclosingWhitespace: true},
   strong: {open: "**", close: "**", mixable: true, expelEnclosingWhitespace: true},
   link: {
-    open(_state, mark, parent, index) {
-      _state.isAutolink = isPlainURL(mark, parent, index, 1)
-      return _state.isAutolink ? "<" : "["
+    open(state, mark, parent, index) {
+      state.inAutolink = isPlainURL(mark, parent, index)
+      return state.inAutolink ? "<" : "["
     },
-    close(_state, mark, parent, index) {
-      const cont = _state.isAutolink ? ">"
+    close(state, mark, parent, index) {
+      let {inAutolink} = state
+      state.inAutolink = undefined
+      return inAutolink ? ">"
         : "](" + mark.attrs.href + (mark.attrs.title ? ' "' + mark.attrs.title.replace(/"/g, '\\"') + '"' : "") + ")"
-      _state.isAutolink = undefined
-      return cont
     }
   },
   code: {open(_state, _mark, parent, index) { return backticksFor(parent.child(index), -1) },
@@ -143,13 +143,11 @@ function backticksFor(node: Node, side: number) {
   return result
 }
 
-function isPlainURL(link: Mark, parent: Node, index: number, side: number) {
+function isPlainURL(link: Mark, parent: Node, index: number) {
   if (link.attrs.title || !/^\w+:/.test(link.attrs.href)) return false
-  let content = parent.child(index + (side < 0 ? -1 : 0))
+  let content = parent.child(index)
   if (!content.isText || content.text != link.attrs.href || content.marks[content.marks.length - 1] != link) return false
-  if (index == (side < 0 ? 1 : parent.childCount - 1)) return true
-  let next = parent.child(index + (side < 0 ? -2 : 1))
-  return !link.isInSet(next.marks)
+  return index == parent.childCount - 1 || !link.isInSet(parent.child(index + 1).marks)
 }
 
 /// This is an object used to track state and expose
@@ -162,8 +160,8 @@ export class MarkdownSerializerState {
   out: string = ""
   /// @internal
   closed: Node | null = null
-  /// @intermal
-  isAutolink?: boolean = undefined
+  /// @internal
+  inAutolink: boolean | undefined = undefined
   /// @internal
   inTightList: boolean = false
 
