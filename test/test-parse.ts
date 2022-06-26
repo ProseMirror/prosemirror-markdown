@@ -150,32 +150,37 @@ describe("markdown", () => {
   })
 
   it("doesn't put a code block after a list item inside the list item", () =>
-     same("* list item\n\n```\ncode\n```",
-          doc(ul({tight: true}, li(p("list item"))), pre("code"))))
+    same("* list item\n\n```\ncode\n```",
+        doc(ul({tight: true}, li(p("list item"))), pre("code"))))
 
   it("doesn't escape characters in code", () =>
-     same("foo`*`", doc(p("foo", code("*")))))
+    same("foo`*`", doc(p("foo", code("*")))))
 
   it("doesn't escape underscores between word characters", () =>
-     same("abc_def", doc(p("abc_def"))))
+    same("abc_def", doc(p("abc_def"))))
 
-   it("doesn't escape strips of underscores between word characters", () =>
-     same("abc___def", doc(p("abc___def"))))
+  it("doesn't escape strips of underscores between word characters", () =>
+    same("abc___def", doc(p("abc___def"))))
 
-   it("escapes underscores at word boundaries", () =>
-     same("\\_abc\\_", doc(p("_abc_"))))
+  it("escapes underscores at word boundaries", () =>
+    same("\\_abc\\_", doc(p("_abc_"))))
 
-   it("escapes underscores surrounded by non-word characters", () =>
-     same("/\\_abc\\_)", doc(p("/_abc_)"))))
+  it("escapes underscores surrounded by non-word characters", () =>
+    same("/\\_abc\\_)", doc(p("/_abc_)"))))
 
   it("ensure no escapes in url", () =>
     parse("[text](https://example.com/_file/#~anchor)",
           doc(p(a({href: "https://example.com/_file/#~anchor"}, "text")))))
 
+  // From issue #65
   it("ensure no escapes in autolinks", () =>
     same("<https://example.com/_file/#~anchor>",
          doc(p(a({href: "https://example.com/_file/#~anchor"}, "https://example.com/_file/#~anchor"))))
   )
+
+  // From issue #73
+  it("escape ! in front of links", () =>
+    serialize(doc(p("!", a("text"))), "\\![text](foo)"))
 
   it("escapes extra characters from options", () => {
     let markdownSerializer = new MarkdownSerializer(defaultMarkdownSerializer.nodes,

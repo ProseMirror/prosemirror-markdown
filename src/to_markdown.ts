@@ -330,6 +330,9 @@ export class MarkdownSerializerState {
         while (active.length < len) {
           let add = marks[active.length]
           active.push(add)
+          // Special case link marks, escape a ! in front of it to prevent misinterpreting later as image
+          if (add.type.name === "link" && this.out.slice(-1) === "!" && this.out.slice(-2) !== "\\")
+            this.out = this.out.slice(0, this.out.length - 1) + '\\!'
           this.text(this.markString(add, true, parent, index), false)
         }
 
