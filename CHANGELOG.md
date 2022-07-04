@@ -1,3 +1,11 @@
+## 1.9.2 (2022-07-04)
+
+### Bug fixes
+
+Don't escape characters in autolinks.
+
+Fix a bug that caused the serializer to not escape start-of-line markup when inside a list.
+
 ## 1.9.1 (2022-06-02)
 
 ### Bug fixes
