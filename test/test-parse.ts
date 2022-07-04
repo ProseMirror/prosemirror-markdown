@@ -183,4 +183,8 @@ describe("markdown", () => {
                                                     {escapeExtraCharacters: /[\|!]/g})
     ist(markdownSerializer.serialize(doc(p("foo|bar!"))), "foo\\|bar\\!")
  })
+
+  it("escapes list markers inside lists", () => {
+    same("* 1\\. hi\n\n* x", doc(ul(li(p("1. hi")), li(p("x")))))
+  })
 })

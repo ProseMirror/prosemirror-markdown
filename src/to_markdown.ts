@@ -163,6 +163,8 @@ export class MarkdownSerializerState {
   /// @internal
   inAutolink: boolean | undefined = undefined
   /// @internal
+  atBlockStart: boolean = false
+  /// @internal
   inTightList: boolean = false
 
   /// @internal
@@ -236,9 +238,8 @@ export class MarkdownSerializerState {
   text(text: string, escape = true) {
     let lines = text.split("\n")
     for (let i = 0; i < lines.length; i++) {
-      var startOfLine = this.atBlank() || this.closed
       this.write()
-      this.out += escape ? this.esc(lines[i], !!startOfLine) : lines[i]
+      this.out += escape ? this.esc(lines[i], this.atBlockStart) : lines[i]
       if (i != lines.length - 1) this.out += "\n"
     }
   }
@@ -257,6 +258,7 @@ export class MarkdownSerializerState {
 
   /// Render the contents of `parent` as inline content.
   renderInline(parent: Node) {
+    this.atBlockStart = true
     let active: Mark[] = [], trailing = ""
     let progress = (node: Node | null, offset: number, index: number) => {
       let marks = node ? node.marks : []
@@ -344,6 +346,7 @@ export class MarkdownSerializerState {
     }
     parent.forEach(progress)
     progress(null, 0, parent.childCount)
+    this.atBlockStart = false
   }
 
   /// Render a node's content as a list. `delim` should be the extra
@@ -381,7 +384,7 @@ export class MarkdownSerializerState {
 
   /// @internal
   quote(str: string) {
-    var wrap = str.indexOf('"') == -1 ? '""' : str.indexOf("'") == -1 ? "''" : "()"
+    let wrap = str.indexOf('"') == -1 ? '""' : str.indexOf("'") == -1 ? "''" : "()"
     return wrap[0] + str + wrap[1]
   }
 
