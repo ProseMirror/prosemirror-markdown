@@ -1,3 +1,9 @@
+## 1.9.3 (2022-07-05)
+
+### Bug fixes
+
+Make sure '\!' characters in front of links are escaped.
+
 ## 1.9.2 (2022-07-04)
 
 ### Bug fixes
