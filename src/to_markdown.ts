@@ -239,6 +239,9 @@ export class MarkdownSerializerState {
     let lines = text.split("\n")
     for (let i = 0; i < lines.length; i++) {
       this.write()
+      // Escape exclamation marks in front of links
+      if (!escape && lines[i][0] == "[" && /(^|[^\\])\!$/.test(this.out))
+        this.out = this.out.slice(0, this.out.length - 1) + "\\!"
       this.out += escape ? this.esc(lines[i], this.atBlockStart) : lines[i]
       if (i != lines.length - 1) this.out += "\n"
     }
