@@ -181,12 +181,21 @@ describe("markdown", () => {
   it("escape ! in front of links", () =>
     serialize(doc(p("!", a("text"))), "\\![text](foo)"))
 
+  // Issue #78
+  it("escape of URL in links and images", () => {
+    serialize(doc(p(a({href: "foo):"}, "link"))), "[link](foo\\):)")
+    serialize(doc(p(a({href: "(foo"}, "link"))), "[link](\\(foo)")
+    serialize(doc(p(img({src: "foo):"}))), "![x](foo\\):)")
+    serialize(doc(p(img({src: "(foo"}))), "![x](\\(foo)")
+    serialize(doc(p(a({title: "bar", href: "foo%20\""}, "link"))), "[link](foo%20\\\" \"bar\")")
+  })
+
   it("escapes extra characters from options", () => {
     let markdownSerializer = new MarkdownSerializer(defaultMarkdownSerializer.nodes,
                                                     defaultMarkdownSerializer.marks,
                                                     {escapeExtraCharacters: /[\|!]/g})
     ist(markdownSerializer.serialize(doc(p("foo|bar!"))), "foo\\|bar\\!")
- })
+  })
 
   it("escapes list markers inside lists", () => {
     same("* 1\\. hi\n\n* x", doc(ul(li(p("1. hi")), li(p("x")))))
