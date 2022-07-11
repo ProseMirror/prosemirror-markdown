@@ -195,6 +195,12 @@ describe("markdown", () => {
     serialize(doc(p(a({title: "bar", href: "foo%20\""}, "link"))), "[link](foo%20\\\" \"bar\")")
   })
 
+  // Issue #80
+  it("hard line breaks followed by newline", () => {
+    serialize(doc(p(em("foo", br(), "\nbar"))), "*foo\\\nbar*")
+    serialize(doc(p(em("foo", br(), "bar"))), "*foo\\\nbar*")
+  })
+
   it("escapes extra characters from options", () => {
     let markdownSerializer = new MarkdownSerializer(defaultMarkdownSerializer.nodes,
                                                     defaultMarkdownSerializer.marks,

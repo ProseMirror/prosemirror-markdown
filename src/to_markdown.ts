@@ -107,7 +107,9 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
   hard_break(state, node, parent, index) {
     for (let i = index + 1; i < parent.childCount; i++)
       if (parent.child(i).type != node.type) {
-        state.write("\\\n")
+        // Only write newline if there is not already one
+        if (parent.child(i).text?.startsWith('\n')) state.write("\\")
+        else state.write("\\\n")
         return
       }
   },
