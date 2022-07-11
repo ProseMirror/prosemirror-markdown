@@ -101,7 +101,7 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
   },
 
   image(state, node) {
-    state.write("![" + state.esc(node.attrs.alt || "") + "](" + node.attrs.src +
+    state.write("![" + state.esc(node.attrs.alt || "") + "](" + node.attrs.src.replace(/[\(\)]/g, "\\$&") +
                 (node.attrs.title ? ' "' + node.attrs.title.replace(/"/g, '\\"') + '"' : "") + ")")
   },
   hard_break(state, node, parent, index) {
@@ -126,7 +126,7 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
       let {inAutolink} = state
       state.inAutolink = undefined
       return inAutolink ? ">"
-        : "](" + mark.attrs.href + (mark.attrs.title ? ' "' + mark.attrs.title.replace(/"/g, '\\"') + '"' : "") + ")"
+        : "](" + mark.attrs.href.replace(/[\(\)"]/g, "\\$&") + (mark.attrs.title ? ` "${mark.attrs.title.replace(/"/g, '\\"')}"` : "") + ")"
     }
   },
   code: {open(_state, _mark, parent, index) { return backticksFor(parent.child(index), -1) },
