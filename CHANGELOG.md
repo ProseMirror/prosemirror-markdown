@@ -1,3 +1,13 @@
+## 1.9.4 (2022-08-19)
+
+### Bug fixes
+
+Don't escape colon characters at the start of a line.
+
+Escape parentheses in images and links.
+
+Allow links to wrap emphasis markers when serializing Markdown.
+
 ## 1.9.3 (2022-07-05)
 
 ### Bug fixes
