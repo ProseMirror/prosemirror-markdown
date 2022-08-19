@@ -71,6 +71,10 @@ describe("markdown", () => {
      same("**[link](foo) is bold**",
           doc(p(strong(a("link"), " is bold")))))
 
+  it("parses emphasis inside links", () =>
+    same("[link *foo **bar** `#`*](foo)",
+         doc(p(a("link ", em("foo ", strong("bar"), " ", code("#")))))))
+
   it("parses code mark inside strong text", () =>
      same("**`code` is bold**",
           doc(p(strong(code("code"), " is bold")))))

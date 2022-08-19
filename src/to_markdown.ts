@@ -127,7 +127,8 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
       state.inAutolink = undefined
       return inAutolink ? ">"
         : "](" + mark.attrs.href.replace(/[\(\)"]/g, "\\$&") + (mark.attrs.title ? ` "${mark.attrs.title.replace(/"/g, '\\"')}"` : "") + ")"
-    }
+    },
+    mixable: true
   },
   code: {open(_state, _mark, parent, index) { return backticksFor(parent.child(index), -1) },
          close(_state, _mark, parent, index) { return backticksFor(parent.child(index - 1), 1) },
@@ -284,7 +285,8 @@ export class MarkdownSerializerState {
       // leading and trailing accordingly.
       if (node && node.isText && marks.some(mark => {
         let info = this.marks[mark.type.name]
-        return info && info.expelEnclosingWhitespace
+        return info && info.expelEnclosingWhitespace &&
+          !(mark.isInSet(active) || index < parent.childCount - 1 && mark.isInSet(parent.child(index + 1).marks))
       })) {
         let [_, lead, inner, trail] = /^(\s*)(.*?)(\s*)$/m.exec(node.text!)!
         leading += lead
