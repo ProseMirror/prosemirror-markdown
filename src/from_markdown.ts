@@ -154,7 +154,8 @@ function tokenHandlers(schema: Schema, tokens: {[token: string]: ParseSpec}) {
   return handlers
 }
 
-interface ParseSpec {
+/// Object type used to specify how Markdown tokens should be parsed.
+export interface ParseSpec {
   /// This token maps to a single node, whose type can be looked up
   /// in the schema under the given name. Exactly one of `node`,
   /// `block`, or `mark` must be set.

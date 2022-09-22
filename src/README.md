@@ -31,6 +31,8 @@ to communication around the project.
 
 @MarkdownParser
 
+@ParseSpec
+
 @defaultMarkdownParser
 
 @MarkdownSerializer
