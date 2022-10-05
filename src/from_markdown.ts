@@ -225,9 +225,13 @@ export class MarkdownParser {
   /// Parse a string as [CommonMark](http://commonmark.org/) markup,
   /// and create a ProseMirror document as prescribed by this parser's
   /// rules.
-  parse(text: string) {
+  ///
+  /// The second argument, when given, is passed through to the
+  /// [Markdown
+  /// parser](https://markdown-it.github.io/markdown-it/#MarkdownIt.parse).
+  parse(text: string, markdownEnv: Object = {}) {
     let state = new MarkdownParseState(this.schema, this.tokenHandlers), doc
-    state.parseTokens(this.tokenizer.parse(text, {}))
+    state.parseTokens(this.tokenizer.parse(text, markdownEnv))
     do { doc = state.closeNode() } while (state.stack.length)
     return doc || this.schema.topNodeType.createAndFill()
   }
