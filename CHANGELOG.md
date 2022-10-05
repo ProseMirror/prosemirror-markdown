@@ -1,3 +1,9 @@
+## 1.10.0 (2022-10-05)
+
+### New features
+
+You can now pass an optional markdown-it environment object to .
+
 ## 1.9.4 (2022-08-19)
 
 ### Bug fixes
