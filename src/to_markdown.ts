@@ -202,7 +202,7 @@ export class MarkdownSerializerState {
   /// content of the block.
   wrapBlock(delim: string, firstDelim: string | null, node: Node, f: () => void) {
     let old = this.delim
-    this.write(firstDelim || delim)
+    this.write(firstDelim != null ? firstDelim : delim)
     this.delim += delim
     f()
     this.delim = old
