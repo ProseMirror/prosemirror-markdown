@@ -65,10 +65,14 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
     state.wrapBlock("> ", null, node, () => state.renderContent(node))
   },
   code_block(state, node) {
-    state.write("```" + (node.attrs.params || "") + "\n")
+    // Make sure the front matter fences are longer than any dash sequence within it
+    const backticks = node.textContent.match(/`{3,}/gm)
+    const fence = backticks ? (backticks.sort().slice(-1)[0] + "`") : "```"
+
+    state.write(fence + (node.attrs.params || "") + "\n")
     state.text(node.textContent, false)
     state.ensureNewLine()
-    state.write("```")
+    state.write(fence)
     state.closeBlock(node)
   },
   heading(state, node) {
