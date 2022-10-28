@@ -1,3 +1,11 @@
+## 1.10.1 (2022-10-28)
+
+### Bug fixes
+
+Don't treat the empty string the same as `null` in `wrapBlock`'s `firstDelim` argument. Check content of code blocks for any sequence of backticks
+
+Use longer sequences of backticks when serializing a code block that contains three or more backticks in a row.
+
 ## 1.10.0 (2022-10-05)
 
 ### New features
