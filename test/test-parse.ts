@@ -209,4 +209,9 @@ describe("markdown", () => {
   it("escapes list markers inside lists", () => {
     same("* 1\\. hi\n\n* x", doc(ul(li(p("1. hi")), li(p("x")))))
   })
+
+  // Issue #88
+  it("code block fence adjusts to content", () => {
+    same("````\n```\ncode\n```\n````", doc(pre("```\ncode\n```")))
+  })
 })
