@@ -71,7 +71,8 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
 
     state.write(fence + (node.attrs.params || "") + "\n")
     state.text(node.textContent, false)
-    state.ensureNewLine()
+    // Add a newline to the current content before adding closing marker 
+    state.write("\n")
     state.write(fence)
     state.closeBlock(node)
   },

@@ -214,4 +214,10 @@ describe("markdown", () => {
   it("code block fence adjusts to content", () => {
     same("````\n```\ncode\n```\n````", doc(pre("```\ncode\n```")))
   })
+
+  it("parses a code block ends with empty line", () => {
+    const originalText = "1\n"
+    const mdText = defaultMarkdownSerializer.serialize(doc(schema.node("code_block", {params: ""}, [schema.text(originalText)])))
+    same(mdText, doc(schema.node("code_block", {params: ""}, [schema.text(originalText)])))
+  })
 })
