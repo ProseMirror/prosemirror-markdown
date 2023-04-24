@@ -140,7 +140,7 @@ describe("markdown", () => {
           doc(p("1. foo"))))
 
   it("doesn't fail with line break inside inline mark", () =>
-     same("**text1\ntext2**", doc(p(strong("text1\ntext2")))))
+     serialize(doc(p(strong("text1\ntext2"))), "**text1\ntext2**"))
 
   it("drops trailing hard breaks", () =>
      serialize(doc(p("a", br(), br())), "a"))
