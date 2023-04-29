@@ -1,11 +1,8 @@
 // @ts-ignore
-import markdownit from "markdown-it"
+import MarkdownIt from "markdown-it"
+import Token from "markdown-it/lib/token"
 import {schema} from "./schema"
 import {Mark, MarkType, Node, Attrs, Schema, NodeType} from "prosemirror-model"
-
-// FIXME
-type Token = any
-type MarkdownIt = any
 
 function maybeMerge(a: Node, b: Node): Node | undefined {
   if (a.isText && b.isText && Mark.sameSet(a.marks, b.marks))
@@ -148,7 +145,7 @@ function tokenHandlers(schema: Schema, tokens: {[token: string]: ParseSpec}) {
   }
 
   handlers.text = (state, tok) => state.addText(tok.content)
-  handlers.inline = (state, tok) => state.parseTokens(tok.children)
+  handlers.inline = (state, tok) => state.parseTokens(tok.children || [])
   handlers.softbreak = handlers.softbreak || (state => state.addText(" "))
 
   return handlers
@@ -245,13 +242,13 @@ function listIsTight(tokens: readonly Token[], i: number) {
 
 /// A parser parsing unextended [CommonMark](http://commonmark.org/),
 /// without inline HTML, and producing a document in the basic schema.
-export const defaultMarkdownParser = new MarkdownParser(schema, markdownit("commonmark", {html: false}), {
+export const defaultMarkdownParser = new MarkdownParser(schema, MarkdownIt("commonmark", {html: false}), {
   blockquote: {block: "blockquote"},
   paragraph: {block: "paragraph"},
   list_item: {block: "list_item"},
   bullet_list: {block: "bullet_list", getAttrs: (_, tokens, i) => ({tight: listIsTight(tokens, i)})},
   ordered_list: {block: "ordered_list", getAttrs: (tok, tokens, i) => ({
-    order: +tok.attrGet("start") || 1,
+    order: +tok.attrGet("start")! || 1,
     tight: listIsTight(tokens, i)
   })},
   heading: {block: "heading", getAttrs: tok => ({level: +tok.tag.slice(1)})},
@@ -261,7 +258,7 @@ export const defaultMarkdownParser = new MarkdownParser(schema, markdownit("comm
   image: {node: "image", getAttrs: tok => ({
     src: tok.attrGet("src"),
     title: tok.attrGet("title") || null,
-    alt: tok.children[0] && tok.children[0].content || null
+    alt: tok.children && tok.children[0] && tok.children[0].content || null
   })},
   hardbreak: {node: "hard_break"},
 
