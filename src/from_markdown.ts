@@ -145,7 +145,7 @@ function tokenHandlers(schema: Schema, tokens: {[token: string]: ParseSpec}) {
   }
 
   handlers.text = (state, tok) => state.addText(tok.content)
-  handlers.inline = (state, tok) => state.parseTokens(tok.children || [])
+  handlers.inline = (state, tok) => state.parseTokens(tok.children!)
   handlers.softbreak = handlers.softbreak || (state => state.addText(" "))
 
   return handlers
@@ -258,7 +258,7 @@ export const defaultMarkdownParser = new MarkdownParser(schema, MarkdownIt("comm
   image: {node: "image", getAttrs: tok => ({
     src: tok.attrGet("src"),
     title: tok.attrGet("title") || null,
-    alt: tok.children && tok.children[0] && tok.children[0].content || null
+    alt: tok.children![0] && tok.children![0].content || null
   })},
   hardbreak: {node: "hard_break"},
 
