@@ -28,9 +28,10 @@
     "prosemirror-model": "^1.0.0"
   },
   "devDependencies": {
-    "punycode": "^1.4.0",
     "@prosemirror/buildhelper": "^0.1.5",
-    "prosemirror-test-builder": "^1.0.0"
+    "@types/markdown-it": "^12.2.3",
+    "prosemirror-test-builder": "^1.0.0",
+    "punycode": "^1.4.0"
   },
   "scripts": {
     "test": "pm-runtests",
