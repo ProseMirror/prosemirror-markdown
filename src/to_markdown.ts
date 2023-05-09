@@ -40,7 +40,10 @@ export class MarkdownSerializer {
       /// Extra characters can be added for escaping. This is passed
       /// directly to String.replace(), and the matching characters are
       /// preceded by a backslash.
-      escapeExtraCharacters?: RegExp
+      escapeExtraCharacters?: RegExp,
+      /// Specify the node name of hard breaks.
+      /// Defaults to "hard_break"
+      hardBreakNodeName?: string
     } = {}
   ) {}
 
@@ -71,7 +74,7 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
 
     state.write(fence + (node.attrs.params || "") + "\n")
     state.text(node.textContent, false)
-    // Add a newline to the current content before adding closing marker 
+    // Add a newline to the current content before adding closing marker
     state.write("\n")
     state.write(fence)
     state.closeBlock(node)
@@ -180,10 +183,12 @@ export class MarkdownSerializerState {
     /// @internal
     readonly marks: {[mark: string]: MarkSerializerSpec},
     /// The options passed to the serializer.
-    readonly options: {tightLists?: boolean, escapeExtraCharacters?: RegExp}
+    readonly options: {tightLists?: boolean, escapeExtraCharacters?: RegExp, hardBreakNodeName?: string}
   ) {
     if (typeof this.options.tightLists == "undefined")
       this.options.tightLists = false
+    if (typeof this.options.hardBreakNodeName == "undefined")
+      this.options.hardBreakNodeName = "hard_break"
   }
 
   /// @internal
@@ -275,9 +280,7 @@ export class MarkdownSerializerState {
       // Remove marks from `hard_break` that are the last node inside
       // that mark to prevent parser edge cases with new lines just
       // before closing marks.
-      // (FIXME it'd be nice if we had a schema-agnostic way to
-      // identify nodes that serialize as hard breaks)
-      if (node && node.type.name === "hard_break")
+      if (node && node.type.name === this.options.hardBreakNodeName) {
         marks = marks.filter(m => {
           if (index + 1 == parent.childCount) return false
           let next = parent.child(index + 1)
