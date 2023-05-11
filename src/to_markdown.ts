@@ -280,7 +280,7 @@ export class MarkdownSerializerState {
       // Remove marks from `hard_break` that are the last node inside
       // that mark to prevent parser edge cases with new lines just
       // before closing marks.
-      if (node && node.type.name === this.options.hardBreakNodeName) {
+      if (node && node.type.name === this.options.hardBreakNodeName)
         marks = marks.filter(m => {
           if (index + 1 == parent.childCount) return false
           let next = parent.child(index + 1)
