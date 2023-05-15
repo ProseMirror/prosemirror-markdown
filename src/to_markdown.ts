@@ -55,7 +55,7 @@ export class MarkdownSerializer {
     /// Defaults to false.
     tightLists?: boolean
   } = {}) {
-    options = Object.assign(this.options, options)
+    options = Object.assign({}, this.options, options)
     let state = new MarkdownSerializerState(this.nodes, this.marks, options)
     state.renderContent(content)
     return state.out
