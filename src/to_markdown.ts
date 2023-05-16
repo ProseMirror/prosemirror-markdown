@@ -54,9 +54,9 @@ export class MarkdownSerializer {
     /// on a node level by specifying a tight attribute on the node.
     /// Defaults to false.
     tightLists?: boolean
-  } = {}) {
+  } = {}, env?: any) {
     options = Object.assign({}, this.options, options)
-    let state = new MarkdownSerializerState(this.nodes, this.marks, options)
+    let state = new MarkdownSerializerState(this.nodes, this.marks, options, env)
     state.renderContent(content)
     return state.out
   }
@@ -183,7 +183,9 @@ export class MarkdownSerializerState {
     /// @internal
     readonly marks: {[mark: string]: MarkSerializerSpec},
     /// The options passed to the serializer.
-    readonly options: {tightLists?: boolean, escapeExtraCharacters?: RegExp, hardBreakNodeName?: string}
+    readonly options: {tightLists?: boolean, escapeExtraCharacters?: RegExp, hardBreakNodeName?: string},
+    /// Additional env data passed from the serialization request.
+    public env?: any
   ) {
     if (typeof this.options.tightLists == "undefined")
       this.options.tightLists = false
