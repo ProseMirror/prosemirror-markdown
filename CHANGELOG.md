@@ -1,3 +1,19 @@
+## 1.11.0 (2023-05-17)
+
+### Bug fixes
+
+Make sure blank lines at the end of code blocks are properly serialized.
+
+Convert soft breaks (single newlines) in Markdown to spaces, rather than newlines in the ProseMirror document, because newlines tend to behave awkwardly in the editor.
+
+Fix a bug that cause the object passed as configuration to `MarkdownSerializer` to be mutated. Add release note
+
+Include CommonJS type declarations in the package to please new TypeScript resolution settings.
+
+### New features
+
+A new option to `MarkdownSerializer` allows client code to configure which node type should be treated as hard breaks during mark serialization. Remove the extra left bracket
+
 ## 1.10.1 (2022-10-28)
 
 ### Bug fixes
