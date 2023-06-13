@@ -77,7 +77,7 @@ export const schema = new Schema({
     },
 
     list_item: {
-      content: "paragraph block*",
+      content: "block+",
       defining: true,
       parseDOM: [{tag: "li"}],
       toDOM() { return ["li", 0] }
