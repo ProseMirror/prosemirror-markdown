@@ -1,3 +1,11 @@
+## 1.11.1 (2023-06-30)
+
+### Bug fixes
+
+Allow any blocks as first child of list items to align with what Markdown itself does.
+
+Add parse rules that clear `strong` and `em` marks when inline CSS resets it.
+
 ## 1.11.0 (2023-05-17)
 
 ### Bug fixes
