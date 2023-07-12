@@ -356,6 +356,16 @@ export class MarkdownSerializerState {
         else
           this.render(node, parent, index)
       }
+
+      // After the first non-empty text node is rendered, the end of output
+      // is no longer at block start.
+      //
+      // FIXME: If a non-text node writes something to the output for this
+      // block, the end of output is also no longer at block start. But how
+      // can we detect that?
+      if (node?.isText && node.nodeSize > 0) {
+        this.atBlockStart = false
+      }
     }
     parent.forEach(progress)
     progress(null, 0, parent.childCount)
@@ -390,7 +400,7 @@ export class MarkdownSerializerState {
       /[`*\\~\[\]_]/g,
       (m, i) => m == "_" && i > 0 && i + 1 < str.length && str[i-1].match(/\w/) && str[i+1].match(/\w/) ?  m : "\\" + m
     )
-    if (startOfLine) str = str.replace(/^[#\-*+>]/, "\\$&").replace(/^(\s*\d+)\./, "$1\\.")
+    if (startOfLine) str = str.replace(/^[#\-*+>]/, "\\$&").replace(/^(\s*\d+)\.\s/, "$1\\. ")
     if (this.options.escapeExtraCharacters) str = str.replace(this.options.escapeExtraCharacters, "\\$&")
     return str
   }
