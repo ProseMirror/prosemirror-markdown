@@ -346,6 +346,7 @@ export class MarkdownSerializerState {
           let add = marks[active.length]
           active.push(add)
           this.text(this.markString(add, true, parent, index), false)
+          this.atBlockStart = false
         }
 
         // Render the node. Special case code marks, since their content
@@ -355,6 +356,7 @@ export class MarkdownSerializerState {
                     this.markString(inner!, false, parent, index + 1), false)
         else
           this.render(node, parent, index)
+        this.atBlockStart = false
       }
 
       // After the first non-empty text node is rendered, the end of output

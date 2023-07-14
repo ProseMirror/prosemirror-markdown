@@ -210,6 +210,15 @@ describe("markdown", () => {
     same("* 1\\. hi\n\n* x", doc(ul(li(p("1. hi")), li(p("x")))))
   })
 
+  it("does not escape list markers in the middle of paragraphs", () => {
+    same("123 [0.com](foo)\n\n123 [2.2](foo)",
+         doc(p("123 ", a("0.com")), p("123 ", a("2.2"))))
+  })
+
+  it("does not escape list markers without space after them", () => {
+    same("1.2kg", doc(p("1.2kg")))
+  })
+
   // Issue #88
   it("code block fence adjusts to content", () => {
     same("````\n```\ncode\n```\n````", doc(pre("```\ncode\n```")))
