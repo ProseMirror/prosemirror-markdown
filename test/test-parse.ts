@@ -211,8 +211,8 @@ describe("markdown", () => {
   })
 
   it("does not escape list markers in the middle of paragraphs", () => {
-    same("123 [0.com](foo)\n\n123 [2.2](foo)",
-         doc(p("123 ", a("0.com")), p("123 ", a("2.2"))))
+    same("123 [0. com](foo)\n\n123 [2. 2](foo)",
+         doc(p("123 ", a("0. com")), p("123 ", a("2. 2"))))
   })
 
   it("does not escape list markers without space after them", () => {
