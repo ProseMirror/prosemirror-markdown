@@ -162,8 +162,10 @@ describe("markdown", () => {
      same("* list item\n\n```\ncode\n```",
           doc(ul({tight: true}, li(p("list item"))), pre("code"))))
 
-  it("doesn't escape characters in code", () =>
-     same("foo`*`", doc(p("foo", code("*")))))
+  it("doesn't escape characters in code", () => {
+      same("foo`*`", doc(p("foo", code("*"))))
+      same("foo `<p>`", doc(p("foo", code("<p>"))))
+  })
 
   it("doesn't escape underscores between word characters", () =>
      same("abc_def", doc(p("abc_def"))))
