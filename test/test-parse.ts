@@ -219,6 +219,27 @@ describe("markdown", () => {
     same("1.2kg", doc(p("1.2kg")))
   })
 
+  // Issue #105
+  it("escapes ATX heading markers with space after them", () => {
+    same("\\### text", doc(p("### text")))
+  })
+
+  it("escapes ATX heading markers followed by the end of line", () => {
+    same("\\###", doc(p("###")))
+  })
+
+  it("does not escape ATX heading markers without space after them", () => {
+    same("#hashtag", doc(p("#hashtag")))
+  })
+
+  it("does not escape ATX heading markers consisting of more than 6 in a sequence", () => {
+    same("#######", doc(p("#######")))
+  })
+
+  it("keeps Unicode space after ATX heading markers when escaping", () => {
+    same("\\#　こんにちは", doc(p("#　こんにちは")))
+  })
+
   // Issue #88
   it("code block fence adjusts to content", () => {
     same("````\n```\ncode\n```\n````", doc(pre("```\ncode\n```")))
