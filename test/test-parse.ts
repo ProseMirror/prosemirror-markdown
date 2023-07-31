@@ -47,6 +47,10 @@ describe("markdown", () => {
      same("3. Foo\n\n4. Bar",
           doc(ol3(li(p("Foo")), li(p("Bar"))))))
 
+  it("can parse a heading in a list", () =>
+    same("* # Foo",
+         doc(ul(li(h1("Foo"))))))
+
   it("parses a code block", () =>
      same("Some code:\n\n```\nHere it is\n```\n\nPara",
           doc(p("Some code:"), schema.node("code_block", {params: ""}, [schema.text("Here it is")]), p("Para"))))
