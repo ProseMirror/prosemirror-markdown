@@ -1,3 +1,13 @@
+## 1.11.2 (2023-08-04)
+
+### Bug fixes
+
+Fix some unnecessary escapes for period characters in Markdown serialization.
+
+Only escape `#` signs if they would otherwise create a heading. Add a test for headings in list items
+
+Fix a bug in `MarkdownSerializer` that broken expelling of whitespace from marks when the mark spanned multiple nodes.
+
 ## 1.11.1 (2023-06-30)
 
 ### Bug fixes
