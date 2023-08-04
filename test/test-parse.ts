@@ -153,6 +153,10 @@ describe("markdown", () => {
      serialize(doc(p("Some emphasized text with", strong(em("  whitespace   ")), "surrounding the emphasis.")),
                "Some emphasized text with  ***whitespace***   surrounding the emphasis."))
 
+  it("expels whitespace from emphasis with a nested mark", () =>
+    serialize(doc(p("One", em(" two ", a("three"), " four "), "five")),
+              "One *two [three](foo) four* five"))
+
   it("drops nodes when all whitespace is expelled from them", () =>
      serialize(doc(p("Text with", em(" "), "an emphasized space")),
                "Text with an emphasized space"))

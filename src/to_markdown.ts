@@ -293,18 +293,27 @@ export class MarkdownSerializerState {
       // leading and trailing accordingly.
       if (node && node.isText && marks.some(mark => {
         let info = this.marks[mark.type.name]
-        return info && info.expelEnclosingWhitespace &&
-          !(mark.isInSet(active) || index < parent.childCount - 1 && mark.isInSet(parent.child(index + 1).marks))
+        return info && info.expelEnclosingWhitespace && !mark.isInSet(active)
       })) {
-        let [_, lead, inner, trail] = /^(\s*)(.*?)(\s*)$/m.exec(node.text!)!
-        leading += lead
-        trailing = trail
-        if (lead || trail) {
-          node = inner ? (node as any).withText(inner) : null
+        let [_, lead, rest] = /^(\s*)(.*)$/m.exec(node.text!)!
+        if (lead) {
+          leading += lead
+          node = rest ? (node as any).withText(rest) : null
           if (!node) marks = active
         }
       }
-
+      if (node && node.isText && marks.some(mark => {
+        let info = this.marks[mark.type.name]
+        return info && info.expelEnclosingWhitespace &&
+          (index == parent.childCount - 1 || !mark.isInSet(parent.child(index + 1).marks))
+      })) {
+        let [_, rest, trail] = /^(.*?)(\s*)$/m.exec(node.text!)!
+        if (trail) {
+          trailing = trail
+          node = rest ? (node as any).withText(rest) : null
+          if (!node) marks = active
+        }
+      }
       let inner = marks.length ? marks[marks.length - 1] : null
       let noEsc = inner && this.marks[inner.type.name].escape === false
       let len = marks.length - (noEsc ? 1 : 0)
