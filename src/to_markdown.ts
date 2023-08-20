@@ -260,7 +260,6 @@ export class MarkdownSerializerState {
 
   /// Render the given node as a block.
   render(node: Node, parent: Node, index: number) {
-    if (typeof parent == "number") throw new Error("!")
     if (!this.nodes[node.type.name]) throw new Error("Token type `" + node.type.name + "` not supported by Markdown renderer")
     this.nodes[node.type.name](this, node, parent, index)
   }
