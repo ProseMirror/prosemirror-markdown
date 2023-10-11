@@ -81,7 +81,7 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
   },
   heading(state, node) {
     state.write(state.repeat("#", node.attrs.level) + " ")
-    state.renderInline(node)
+    state.renderInline(node, false)
     state.closeBlock(node)
   },
   horizontal_rule(state, node) {
@@ -270,8 +270,8 @@ export class MarkdownSerializerState {
   }
 
   /// Render the contents of `parent` as inline content.
-  renderInline(parent: Node) {
-    this.atBlockStart = true
+  renderInline(parent: Node, fromBlockStart = true) {
+    this.atBlockStart = fromBlockStart
     let active: Mark[] = [], trailing = ""
     let progress = (node: Node | null, offset: number, index: number) => {
       let marks = node ? node.marks : []
