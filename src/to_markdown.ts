@@ -410,7 +410,7 @@ export class MarkdownSerializerState {
       /[`*\\~\[\]_]/g,
       (m, i) => m == "_" && i > 0 && i + 1 < str.length && str[i-1].match(/\w/) && str[i+1].match(/\w/) ?  m : "\\" + m
     )
-    if (startOfLine) str = str.replace(/^[\-*+>]/, "\\$&").replace(/^(\s*)(#{1,6})(\s|$)/, '$1\\$2$3').replace(/^(\s*\d+)\.\s/, "$1\\. ")
+    if (startOfLine) str = str.replace(/^(\+[ ]|[\-*>])/, "\\$&").replace(/^(\s*)(#{1,6})(\s|$)/, '$1\\$2$3').replace(/^(\s*\d+)\.\s/, "$1\\. ")
     if (this.options.escapeExtraCharacters) str = str.replace(this.options.escapeExtraCharacters, "\\$&")
     return str
   }
