@@ -251,7 +251,10 @@ describe("markdown", () => {
   it("doesn't escape block-start characters in header", () => {
     same("# 1. foo", doc(h1("1. foo")))
   })
-
+  it("doesn't escape +++", () => {
+    same("+++", doc(p("+++")))
+  })
+  
   // Issue #88
   it("code block fence adjusts to content", () => {
     same("````\n```\ncode\n```\n````", doc(pre("```\ncode\n```")))
