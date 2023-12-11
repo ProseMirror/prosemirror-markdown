@@ -24,12 +24,12 @@
     "url": "git://github.com/prosemirror/prosemirror-markdown.git"
   },
   "dependencies": {
-    "markdown-it": "^13.0.1",
+    "markdown-it": "^14.0.0",
     "prosemirror-model": "^1.0.0"
   },
   "devDependencies": {
     "@prosemirror/buildhelper": "^0.1.5",
-    "@types/markdown-it": "^12.2.3",
+    "@types/markdown-it": "^13.0.7",
     "prosemirror-test-builder": "^1.0.0",
     "punycode": "^1.4.0"
   },
