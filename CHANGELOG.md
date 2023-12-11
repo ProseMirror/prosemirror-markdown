@@ -1,3 +1,17 @@
+## 1.12.0 (2023-12-11)
+
+### Bug fixes
+
+Block-level markup inside a heading is no longer escaped by the serializer.
+
+Do not backslash-escape a `+` at the start of line when it isn't followed by a space. Upgrade to markdown-it 14
+
+### New features
+
+`MarkdownSerializerState.renderInline` now takes a parameter that controls whether block-level markup should be escaped.
+
+Upgrade to markdown-it version 14, which provides ES modules.
+
 ## 1.11.2 (2023-08-04)
 
 ### Bug fixes
