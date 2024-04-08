@@ -128,9 +128,9 @@ export const schema = new Schema({
     strong: {
       parseDOM: [
         {tag: "strong"},
-        {tag: "b", getAttrs: (node: HTMLElement) => node.style.fontWeight != "normal" && null},
+        {tag: "b", getAttrs: node => node.style.fontWeight != "normal" && null},
         {style: "font-weight=400", clearMark: m => m.type.name == "strong"},
-        {style: "font-weight", getAttrs: (value: string) => /^(bold(er)?|[5-9]\d{2,})$/.test(value) && null}
+        {style: "font-weight", getAttrs: value => /^(bold(er)?|[5-9]\d{2,})$/.test(value) && null}
       ],
       toDOM() { return ["strong"] }
     } as MarkSpec,
@@ -142,7 +142,7 @@ export const schema = new Schema({
       },
       inclusive: false,
       parseDOM: [{tag: "a[href]", getAttrs(dom) {
-        return {href: (dom as HTMLElement).getAttribute("href"), title: (dom as HTMLElement).getAttribute("title")}
+        return {href: (dom as HTMLElement).getAttribute("href"), title: dom.getAttribute("title")}
       }}],
       toDOM(node) { return ["a", node.attrs] }
     },
