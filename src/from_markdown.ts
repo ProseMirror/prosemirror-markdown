@@ -230,7 +230,7 @@ export class MarkdownParser {
     let state = new MarkdownParseState(this.schema, this.tokenHandlers), doc
     state.parseTokens(this.tokenizer.parse(text, markdownEnv))
     do { doc = state.closeNode() } while (state.stack.length)
-    return doc || this.schema.topNodeType.createAndFill()
+    return doc || this.schema.topNodeType.createAndFill()!
   }
 }
 
