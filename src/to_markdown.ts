@@ -314,7 +314,8 @@ export class MarkdownSerializerState {
         }
       }
       let inner = marks.length ? marks[marks.length - 1] : null
-      let noEsc = inner && this.marks[inner.type.name].escape === false
+      let innerInfo = inner && this.marks[inner.type.name]
+      let noEsc = innerInfo && innerInfo.escape === false
       let len = marks.length - (noEsc ? 1 : 0)
 
       // Try to reorder 'mixable' marks, such as em and strong, which
@@ -323,10 +324,12 @@ export class MarkdownSerializerState {
       // active.
       outer: for (let i = 0; i < len; i++) {
         let mark = marks[i]
-        if (!this.marks[mark.type.name].mixable) break
+        let info = this.marks[mark.type.name]
+        if (info && !info.mixable) break
         for (let j = 0; j < active.length; j++) {
           let other = active[j]
-          if (!this.marks[other.type.name].mixable) break
+          let otherInfo = this.marks[other.type.name]
+          if (otherInfo && !otherInfo.mixable) break
           if (mark.eq(other)) {
             if (i > j)
               marks = marks.slice(0, j).concat(mark).concat(marks.slice(j, i)).concat(marks.slice(i + 1, len))
@@ -431,6 +434,7 @@ export class MarkdownSerializerState {
   /// Get the markdown string for a given opening or closing mark.
   markString(mark: Mark, open: boolean, parent: Node, index: number) {
     let info = this.marks[mark.type.name]
+    if (info === undefined) return ""
     let value = open ? info.open : info.close
     return typeof value == "string" ? value : value(this, mark, parent, index)
   }
