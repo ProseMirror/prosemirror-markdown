@@ -260,16 +260,14 @@ export class MarkdownSerializerState {
 
   /// Render the given node as a block.
   render(node: Node, parent: Node, index: number) {
-    let render = this.nodes[node.type.name];
-    if (render) {
-      render(this, node, parent, index);
+    let render = this.nodes[node.type.name]
+    if (render) return render(this, node, parent, index)
+    if (node.type.isLeaf) return
+    if (node.type.inlineContent) {
+      this.renderInline(node)
+      this.closeBlock(node)
     } else {
-      if (node.type.inlineContent) {
-        this.renderInline(node)
-        this.closeBlock(node)
-      } else {
-        this.renderContent(node)
-      }
+      this.renderContent(node)
     }
   }
 
