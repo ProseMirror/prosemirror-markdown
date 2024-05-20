@@ -25,6 +25,8 @@ type MarkSerializerSpec = {
   escape?: boolean
 }
 
+const blankMark: MarkSerializerSpec = {open: "", close: "", mixable: true}
+
 /// A specification for serializing a ProseMirror document as
 /// Markdown/CommonMark text.
 export class MarkdownSerializer {
@@ -43,7 +45,12 @@ export class MarkdownSerializer {
       escapeExtraCharacters?: RegExp,
       /// Specify the node name of hard breaks.
       /// Defaults to "hard_break"
-      hardBreakNodeName?: string
+      hardBreakNodeName?: string,
+      /// By default, the serializer raises an error when it finds a
+      /// node or mark type for which no serializer is defined. Set
+      /// this to `false` to make it just ignore such elements,
+      /// rendering only their content.
+      strict?: boolean
     } = {}
   ) {}
 
@@ -183,7 +190,7 @@ export class MarkdownSerializerState {
     /// @internal
     readonly marks: {[mark: string]: MarkSerializerSpec},
     /// The options passed to the serializer.
-    readonly options: {tightLists?: boolean, escapeExtraCharacters?: RegExp, hardBreakNodeName?: string}
+    readonly options: {tightLists?: boolean, escapeExtraCharacters?: RegExp, hardBreakNodeName?: string, strict?: boolean}
   ) {
     if (typeof this.options.tightLists == "undefined")
       this.options.tightLists = false
@@ -204,6 +211,17 @@ export class MarkdownSerializerState {
       }
       this.closed = null
     }
+  }
+
+  /// @internal
+  getMark(name: string) {
+    let info = this.marks[name]
+    if (!info) {
+      if (this.options.strict !== false)
+        throw new Error(`Mark type \`${name}\` not supported by Markdown renderer`)
+      info = blankMark
+    }
+    return info
   }
 
   /// Render a block, prefixing each line with `delim`, and the first
@@ -260,8 +278,17 @@ export class MarkdownSerializerState {
 
   /// Render the given node as a block.
   render(node: Node, parent: Node, index: number) {
-    if (!this.nodes[node.type.name]) throw new Error("Token type `" + node.type.name + "` not supported by Markdown renderer")
-    this.nodes[node.type.name](this, node, parent, index)
+    if (this.nodes[node.type.name]) {
+      this.nodes[node.type.name](this, node, parent, index)
+    } else {
+      if (this.options.strict !== false) {
+        throw new Error("Token type `" + node.type.name + "` not supported by Markdown renderer")
+      } else if (!node.type.isLeaf) {
+        if (node.type.inlineContent) this.renderInline(node)
+        else this.renderContent(node)
+        if (node.isBlock) this.closeBlock(node)
+      }
+    }
   }
 
   /// Render the contents of `parent` as block nodes.
@@ -291,7 +318,7 @@ export class MarkdownSerializerState {
       // If whitespace has to be expelled from the node, adjust
       // leading and trailing accordingly.
       if (node && node.isText && marks.some(mark => {
-        let info = this.marks[mark.type.name]
+        let info = this.getMark(mark.type.name)
         return info && info.expelEnclosingWhitespace && !mark.isInSet(active)
       })) {
         let [_, lead, rest] = /^(\s*)(.*)$/m.exec(node.text!)!
@@ -302,7 +329,7 @@ export class MarkdownSerializerState {
         }
       }
       if (node && node.isText && marks.some(mark => {
-        let info = this.marks[mark.type.name]
+        let info = this.getMark(mark.type.name)
         return info && info.expelEnclosingWhitespace &&
           (index == parent.childCount - 1 || !mark.isInSet(parent.child(index + 1).marks))
       })) {
@@ -314,7 +341,7 @@ export class MarkdownSerializerState {
         }
       }
       let inner = marks.length ? marks[marks.length - 1] : null
-      let noEsc = inner && this.marks[inner.type.name].escape === false
+      let noEsc = inner && this.getMark(inner.type.name).escape === false
       let len = marks.length - (noEsc ? 1 : 0)
 
       // Try to reorder 'mixable' marks, such as em and strong, which
@@ -323,10 +350,10 @@ export class MarkdownSerializerState {
       // active.
       outer: for (let i = 0; i < len; i++) {
         let mark = marks[i]
-        if (!this.marks[mark.type.name].mixable) break
+        if (!this.getMark(mark.type.name).mixable) break
         for (let j = 0; j < active.length; j++) {
           let other = active[j]
-          if (!this.marks[other.type.name].mixable) break
+          if (!this.getMark(other.type.name).mixable) break
           if (mark.eq(other)) {
             if (i > j)
               marks = marks.slice(0, j).concat(mark).concat(marks.slice(j, i)).concat(marks.slice(i + 1, len))
@@ -430,7 +457,7 @@ export class MarkdownSerializerState {
 
   /// Get the markdown string for a given opening or closing mark.
   markString(mark: Mark, open: boolean, parent: Node, index: number) {
-    let info = this.marks[mark.type.name]
+    let info = this.getMark(mark.type.name)
     let value = open ? info.open : info.close
     return typeof value == "string" ? value : value(this, mark, parent, index)
   }
