@@ -1,3 +1,13 @@
+## 1.13.0 (2024-05-20)
+
+### Bug fixes
+
+Fix the type of `MarkdownParser.parse` to be non-nullable. Add a strict option to MarkdownSerializer
+
+### New features
+
+The new `strict` option to `MarkdownSerializer` makes it possible to make the serializer ignore node and mark types it doesn't know.
+
 ## 1.12.0 (2023-12-11)
 
 ### Bug fixes
