@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@prosemirror/buildhelper": "^0.1.5",
-    "@types/markdown-it": "^13.0.7",
+    "@types/markdown-it": "^14.0.0",
     "prosemirror-test-builder": "^1.0.0",
     "punycode": "^1.4.0"
   },

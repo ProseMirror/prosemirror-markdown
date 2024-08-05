@@ -1,6 +1,6 @@
 // @ts-ignore
 import MarkdownIt from "markdown-it"
-import Token from "markdown-it/lib/token"
+import Token from "markdown-it/lib/token.mjs"
 import {schema} from "./schema"
 import {Mark, MarkType, Node, Attrs, Schema, NodeType} from "prosemirror-model"
 
