@@ -1,3 +1,9 @@
+## 1.13.1 (2024-09-26)
+
+### Bug fixes
+
+Fix a type error caused by use of an older markdown-it type package.
+
 ## 1.13.0 (2024-05-20)
 
 ### Bug fixes
