@@ -25,11 +25,11 @@
   },
   "dependencies": {
     "markdown-it": "^14.0.0",
-    "prosemirror-model": "^1.20.0"
+    "prosemirror-model": "^1.20.0",
+    "@types/markdown-it": "^14.0.0"
   },
   "devDependencies": {
     "@prosemirror/buildhelper": "^0.1.5",
-    "@types/markdown-it": "^14.0.0",
     "prosemirror-test-builder": "^1.0.0",
     "punycode": "^1.4.0"
   },
