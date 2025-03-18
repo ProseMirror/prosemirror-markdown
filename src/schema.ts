@@ -148,6 +148,7 @@ export const schema = new Schema({
     },
 
     code: {
+      code: true,
       parseDOM: [{tag: "code"}],
       toDOM() { return ["code"] }
     }
