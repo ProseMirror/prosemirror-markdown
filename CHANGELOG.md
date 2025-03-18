@@ -1,3 +1,9 @@
+## 1.13.2 (2025-03-18)
+
+### Bug fixes
+
+Add a `code` flag to the code mark.
+
 ## 1.13.1 (2024-09-26)
 
 ### Bug fixes
