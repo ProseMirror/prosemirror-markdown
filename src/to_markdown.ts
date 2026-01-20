@@ -151,7 +151,7 @@ export const defaultMarkdownSerializer = new MarkdownSerializer({
 })
 
 function backticksFor(node: Node, side: number) {
-  let ticks = /`+/g, m, len = 0
+  let ticks = /`+/g, m: RegExpExecArray | null, len = 0
   if (node.isText) while (m = ticks.exec(node.text!)) len = Math.max(len, m[0].length)
   let result = len > 0 && side > 0 ? " `" : "`"
   for (let i = 0; i < len; i++) result += "`"
@@ -330,8 +330,7 @@ export class MarkdownSerializerState {
       }
       if (node && node.isText && marks.some(mark => {
         let info = this.getMark(mark.type.name)
-        return info && info.expelEnclosingWhitespace &&
-          (index == parent.childCount - 1 || !mark.isInSet(parent.child(index + 1).marks))
+        return info && info.expelEnclosingWhitespace && !this.isMarkAhead(parent, index + 1, mark)
       })) {
         let [_, rest, trail] = /^(.*?)(\s*)$/m.exec(node.text!)!
         if (trail) {
@@ -469,6 +468,16 @@ export class MarkdownSerializerState {
     return {
       leading: (text.match(/^(\s+)/) || [undefined])[0],
       trailing: (text.match(/(\s+)$/) || [undefined])[0]
+    }
+  }
+
+  /// @internal
+  isMarkAhead(parent: Node, index: number, mark: Mark) {
+    for (;; index++) {
+      if (index == parent.childCount) return false
+      let next = parent.child(index)
+      if (next.type.name != this.options.hardBreakNodeName) return mark.isInSet(next.marks)
+      index++
     }
   }
 }

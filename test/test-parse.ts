@@ -157,6 +157,9 @@ describe("markdown", () => {
     serialize(doc(p("One", em(" two ", a("three"), " four "), "five")),
               "One *two [three](foo) four* five"))
 
+  it("properly expels whitespace before a hard break", () =>
+    serialize(doc(p(strong("foo ", br()), "bar")), "**foo** \\\nbar"))
+
   it("drops nodes when all whitespace is expelled from them", () =>
      serialize(doc(p("Text with", em(" "), "an emphasized space")),
                "Text with an emphasized space"))
