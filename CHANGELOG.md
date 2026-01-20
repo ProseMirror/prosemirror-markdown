@@ -1,3 +1,9 @@
+## 1.13.3 (2026-01-20)
+
+### Bug fixes
+
+Properly move trailing whitespace out of marks when they end in a hard break node.
+
 ## 1.13.2 (2025-03-18)
 
 ### Bug fixes
