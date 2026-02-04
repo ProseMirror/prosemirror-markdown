@@ -1,3 +1,9 @@
+## 1.13.4 (2026-02-04)
+
+### Bug fixes
+
+Fix a regression that caused the serializer to crash when a block ends in a hard break.
+
 ## 1.13.3 (2026-01-20)
 
 ### Bug fixes
