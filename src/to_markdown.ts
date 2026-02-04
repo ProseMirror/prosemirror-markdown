@@ -474,7 +474,7 @@ export class MarkdownSerializerState {
   /// @internal
   isMarkAhead(parent: Node, index: number, mark: Mark) {
     for (;; index++) {
-      if (index == parent.childCount) return false
+      if (index >= parent.childCount) return false
       let next = parent.child(index)
       if (next.type.name != this.options.hardBreakNodeName) return mark.isInSet(next.marks)
       index++

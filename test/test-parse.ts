@@ -160,6 +160,10 @@ describe("markdown", () => {
   it("properly expels whitespace before a hard break", () =>
     serialize(doc(p(strong("foo ", br()), "bar")), "**foo** \\\nbar"))
 
+
+  it("doesn't crash when a block ends in a hard break", () =>
+    serialize(doc(p(strong("foo", br()))), "**foo**"))
+
   it("drops nodes when all whitespace is expelled from them", () =>
      serialize(doc(p("Text with", em(" "), "an emphasized space")),
                "Text with an emphasized space"))
