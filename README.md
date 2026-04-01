@@ -1,5 +1,5 @@
 <h1>prosemirror-markdown</h1>
-<p>[ <a href="http://prosemirror.net"><strong>WEBSITE</strong></a> | <a href="https://github.com/prosemirror/prosemirror-markdown/issues"><strong>ISSUES</strong></a> | <a href="https://discuss.prosemirror.net"><strong>FORUM</strong></a> | <a href="https://gitter.im/ProseMirror/prosemirror"><strong>GITTER</strong></a> ]</p>
+<p>[ <a href="http://prosemirror.net"><strong>WEBSITE</strong></a> | <a href="https://code.haverbeke.berlin/prosemirror/prosemirror-markdown/issues"><strong>ISSUES</strong></a> | <a href="https://discuss.prosemirror.net"><strong>FORUM</strong></a> | <a href="https://gitter.im/ProseMirror/prosemirror"><strong>GITTER</strong></a> ]</p>
 <p>This is a (non-core) module for <a href="http://prosemirror.net">ProseMirror</a>.
 ProseMirror is a well-behaved rich semantic content editor based on
 contentEditable, with support for collaborative editing and custom
@@ -10,10 +10,10 @@ the document schema used by <a href="http://commonmark.org/">CommonMark</a>, and
 a parser and serializer to convert between ProseMirror documents in
 that schema and CommonMark/Markdown text.</p>
 <p>This code is released under an
-<a href="https://github.com/prosemirror/prosemirror/tree/master/LICENSE">MIT license</a>.
+<a href="https://code.haverbeke.berlin/prosemirror/prosemirror/src/branch/main/LICENSE">MIT license</a>.
 There's a <a href="http://discuss.prosemirror.net">forum</a> for general
 discussion and support requests, and the
-<a href="https://github.com/prosemirror/prosemirror/issues">Github bug tracker</a>
+<a href="https://code.haverbeke.berlin/prosemirror/prosemirror/issues">bug tracker</a>
 is the place to report issues.</p>
 <p>We aim to be an inclusive, welcoming community. To make that explicit,
 we have a <a href="http://contributor-covenant.org/version/1/1/0/">code of
