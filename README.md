@@ -1,3 +1,5 @@
+**This repository has moved to https://code.haverbeke.berlin/prosemirror/prosemirror-markdown**
+
 <h1>prosemirror-markdown</h1>
 <p>[ <a href="http://prosemirror.net"><strong>WEBSITE</strong></a> | <a href="https://code.haverbeke.berlin/prosemirror/prosemirror-markdown/issues"><strong>ISSUES</strong></a> | <a href="https://discuss.prosemirror.net"><strong>FORUM</strong></a> | <a href="https://gitter.im/ProseMirror/prosemirror"><strong>GITTER</strong></a> ]</p>
 <p>This is a (non-core) module for <a href="http://prosemirror.net">ProseMirror</a>.
